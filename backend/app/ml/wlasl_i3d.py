@@ -1,3 +1,4 @@
+import logging
 import math
 from typing import Callable, Sequence
 
@@ -15,6 +16,9 @@ CROP = 224
 MAX_FRAMES = 64
 MIN_PROB = 0.25
 MIN_MARGIN = 3.0
+SCORE_MODES = ("all", "masked")
+
+log = logging.getLogger(__name__)
 
 
 def sample_indices(count: int, target: int = MAX_FRAMES) -> list[int]:
@@ -46,12 +50,17 @@ def _softmax(scores: np.ndarray) -> np.ndarray:
 
 
 def decide(scores: np.ndarray, class_to_sign: dict[int, str], model_version: str,
-           min_prob: float = MIN_PROB, min_margin: float = MIN_MARGIN) -> Prediction:
-    order = np.argsort(scores)[::-1]
-    top1, top2 = int(order[0]), int(order[1])
-    margin = float(scores[top1] - scores[top2])
-    max_prob = float(_softmax(scores)[top1])
+           min_prob: float = MIN_PROB, min_margin: float = MIN_MARGIN, score_mode: str = "all") -> Prediction:
+    classes = np.fromiter(sorted(class_to_sign), int) if score_mode == "masked" else np.arange(len(scores))
+    considered = scores[classes]
+    order = np.argsort(considered)[::-1]
+    top1 = int(classes[order[0]])
+    margin = float(considered[order[0]] - considered[order[1]])
+    max_prob = float(_softmax(considered)[order[0]])
     label = class_to_sign.get(top1)
+    log.info("wlasl top5 (%s): %s | margin %.2f", score_mode,
+             ", ".join(f"{class_to_sign.get(int(classes[i]), int(classes[i]))} {considered[i]:.1f}" for i in order[:5]),
+             margin)
     if max_prob < min_prob or margin < min_margin or label is None:
         return Prediction(None, max_prob, "uncertain_prediction", model_version)
     return Prediction(label, max_prob, None, model_version)
@@ -59,24 +68,27 @@ def decide(scores: np.ndarray, class_to_sign: dict[int, str], model_version: str
 
 class WlaslRecognizer:
     def __init__(self, model: Callable[[np.ndarray], np.ndarray], class_to_sign: dict[int, str],
-                 model_version: str, min_prob: float = MIN_PROB, min_margin: float = MIN_MARGIN):
+                 model_version: str, min_prob: float = MIN_PROB, min_margin: float = MIN_MARGIN,
+                 score_mode: str = "all"):
         self.model = model
         self.class_to_sign = dict(class_to_sign)
         self.model_version = model_version
         self.min_prob = min_prob
         self.min_margin = min_margin
+        self.score_mode = score_mode
 
     def predict_sequence(self, frames_rgb: Sequence[np.ndarray], timestamps_ms: Sequence[float]) -> Prediction:
         logits = np.asarray(self.model(preprocess(frames_rgb)), dtype=np.float64)
         scores = logits[0].max(axis=1)
-        return decide(scores, self.class_to_sign, self.model_version, self.min_prob, self.min_margin)
+        return decide(scores, self.class_to_sign, self.model_version, self.min_prob, self.min_margin,
+                      self.score_mode)
 
 
 def _number(value, low: float, high: float) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) and low <= value <= high
 
 
-def read_settings(manifest: ModelManifest) -> tuple[dict[int, str], int, float, float]:
+def read_settings(manifest: ModelManifest) -> tuple[dict[int, str], int, float, float, str]:
     data = manifest.settings
     if data.get("preprocessingVersion") != PREPROCESSING_VERSION:
         raise ModelNotReady("wlasl preprocessing version mismatch")
@@ -98,7 +110,10 @@ def read_settings(manifest: ModelManifest) -> tuple[dict[int, str], int, float, 
     min_prob, min_margin = data.get("minProb"), data.get("minMargin")
     if not _number(min_prob, 0.0, 1.0) or not _number(min_margin, 0.0, math.inf):
         raise ModelNotReady("wlasl thresholds invalid")
-    return class_to_sign, num_classes, float(min_prob), float(min_margin)
+    score_mode = data.get("scoreMode", "all")
+    if score_mode not in SCORE_MODES or (score_mode == "masked" and len(class_to_sign) < 2):
+        raise ModelNotReady("wlasl scoreMode invalid")
+    return class_to_sign, num_classes, float(min_prob), float(min_margin), score_mode
 
 
 def build_model(weights_path, num_classes: int) -> Callable[[np.ndarray], np.ndarray]:
@@ -108,6 +123,6 @@ def build_model(weights_path, num_classes: int) -> Callable[[np.ndarray], np.nda
 
 
 def load_wlasl_recognizer(manifest: ModelManifest) -> WlaslRecognizer:
-    class_to_sign, num_classes, min_prob, min_margin = read_settings(manifest)
+    class_to_sign, num_classes, min_prob, min_margin, score_mode = read_settings(manifest)
     model = build_model(manifest.weights_path, num_classes)
-    return WlaslRecognizer(model, class_to_sign, manifest.model_version, min_prob, min_margin)
+    return WlaslRecognizer(model, class_to_sign, manifest.model_version, min_prob, min_margin, score_mode)

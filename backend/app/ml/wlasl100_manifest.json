@@ -5,8 +5,9 @@
   "preprocessingVersion": "wlasl-i3d-bgr-fit256-crop224-max64-v1",
   "frameCount": 64,
   "numClasses": 100,
+  "scoreMode": "masked",
   "minProb": 0.25,
-  "minMargin": 3.0,
+  "minMargin": 0.5,
   "labels": [
     "CITY",
     "TABLE",

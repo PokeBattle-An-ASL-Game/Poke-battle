@@ -1,5 +1,6 @@
 import io
 import logging
+import os
 
 from flask import Flask, Request
 from flask_cors import CORS
@@ -19,6 +20,7 @@ class InMemoryRequest(Request):
 
 
 def create_app(overrides=None, recognizer=None, manifest=None) -> Flask:
+    logging.basicConfig(level=os.environ.get("POOKIE_LOG_LEVEL", "INFO"))
     app = Flask(__name__, static_folder=None)
     app.request_class = InMemoryRequest
     app.config.from_object(Config)

@@ -152,3 +152,36 @@ def test_loader_builds_recognizer_from_manifest(monkeypatch):
 def test_invalid_wlasl_settings_not_ready(overrides):
     with pytest.raises(ModelNotReady):
         w.read_settings(wlasl_manifest(**overrides))
+
+
+def test_masked_mode_ignores_classes_outside_the_game():
+    scores = logits({50: 12.0, 3: 6.0, 7: 1.0})
+    assert w.decide(scores, CLASSES, "v1").label is None
+    masked = w.decide(scores, CLASSES, "v1", score_mode="masked")
+    assert masked.label == "CITY" and masked.reason is None and masked.score > 0.9
+
+
+def test_masked_mode_still_rejects_flat_scores():
+    prediction = w.decide(logits({3: 1.0, 7: 0.9}), CLASSES, "v1", min_margin=0.5, score_mode="masked")
+    assert prediction.label is None and prediction.reason == "uncertain_prediction"
+
+
+def test_settings_default_to_all_classes_and_accept_masked():
+    assert w.read_settings(wlasl_manifest())[4] == "all"
+    assert w.read_settings(wlasl_manifest(scoreMode="masked"))[4] == "masked"
+
+
+@pytest.mark.parametrize("overrides", [{"scoreMode": "top1"}, {"scoreMode": None},
+                                       {"scoreMode": "masked", "classMap": {"3": "CITY"}, "labels": ("CITY",)}])
+def test_invalid_score_mode_not_ready(overrides):
+    labels = overrides.pop("labels", None)
+    manifest = wlasl_manifest(**overrides)
+    if labels:
+        manifest = ModelManifest("v1", "wlasl-i3d", labels, frozenset(labels), Path("w.pt"), manifest.settings)
+    with pytest.raises(ModelNotReady):
+        w.read_settings(manifest)
+
+
+def test_loader_passes_score_mode(monkeypatch):
+    monkeypatch.setattr(w, "build_model", lambda path, n: "model")
+    assert w.load_wlasl_recognizer(wlasl_manifest(scoreMode="masked")).score_mode == "masked"

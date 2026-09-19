@@ -62,7 +62,7 @@ def test_missing_wlasl_runtime_is_not_ready(tmp_path, monkeypatch):
     def no_runtime(weights_path, num_classes):
         raise ModuleNotFoundError("torch")
 
-    monkeypatch.setattr(wlasl_i3d, "read_settings", lambda manifest: ({}, 100, 0.25, 3.0))
+    monkeypatch.setattr(wlasl_i3d, "read_settings", lambda manifest: ({}, 100, 0.25, 0.5, "all"))
     monkeypatch.setattr(wlasl_i3d, "build_model", no_runtime)
     write_model(tmp_path, artifact_format="wlasl-i3d")
     with pytest.raises(r.ModelNotReady, match="runtime not installed"):

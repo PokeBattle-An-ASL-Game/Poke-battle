@@ -139,7 +139,8 @@ def test_committed_wlasl_template_matches_signs_and_class_map():
     assert data["frameCount"] == 64
     assert data["numClasses"] == 100
     assert data["minProb"] == 0.25
-    assert data["minMargin"] == 3.0
+    assert data["minMargin"] == 0.5
+    assert data["scoreMode"] == "masked"
     assert data["weightsFile"] == "wlasl100_i3d.pt"
     assert data["weightsSha256"] == "a61d7dda5f875ce5ebd9d407c56874f77d1cd2aeb4bc7cd0d98a6e1ca4669a0c"
     assert data["modelVersion"] == "wlasl100-i3d-provisional-v1"
@@ -160,6 +161,6 @@ def test_installed_wlasl_template_loads_with_fake_weights(tmp_path, monkeypatch)
     assert manifest.qualified_labels == frozenset(EXPECTED_CLASS_MAP.values())
     assert manifest.weights_path == tmp_path / "wlasl100_i3d.pt"
 
-    class_to_sign, num_classes, min_prob, min_margin = wlasl.read_settings(manifest)
-    assert num_classes == 100 and min_prob == 0.25 and min_margin == 3.0
+    class_to_sign, num_classes, min_prob, min_margin, score_mode = wlasl.read_settings(manifest)
+    assert (num_classes, min_prob, min_margin, score_mode) == (100, 0.25, 0.5, "masked")
     assert class_to_sign == {int(index): sign for index, sign in EXPECTED_CLASS_MAP.items()}
