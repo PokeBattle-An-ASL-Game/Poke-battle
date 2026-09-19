@@ -1,8 +1,12 @@
+from pathlib import Path
+
 import cv2
 import numpy as np
 import pytest
 
 from app.ml import wlasl_i3d as w
+from app.ml.manifest import ModelManifest
+from app.ml.recognizer import ModelNotReady
 
 CLASSES = {3: "HELLO", 7: "YES"}
 
@@ -103,3 +107,47 @@ def test_recognizer_takes_max_logit_over_time():
     prediction = recognizer.predict_sequence(random_frames(25, 480, 640), [i * 100.0 for i in range(25)])
     assert seen == [(1, 3, 25, 224, 224)]
     assert prediction.label == "YES" and prediction.reason is None
+
+
+def wlasl_manifest(**overrides):
+    settings = {"preprocessingVersion": w.PREPROCESSING_VERSION, "frameCount": 25, "numClasses": 100,
+                "classMap": {"3": "HELLO", "7": "YES"}, "minProb": 0.3, "minMargin": 2.5, **overrides}
+    return ModelManifest("v1", "wlasl-i3d", ("HELLO", "YES"), frozenset({"HELLO"}), Path("w.pt"), settings)
+
+
+def test_loader_builds_recognizer_from_manifest(monkeypatch):
+    calls = []
+    monkeypatch.setattr(w, "build_model", lambda path, n: calls.append((path, n)) or "model")
+    recognizer = w.load_wlasl_recognizer(wlasl_manifest())
+    assert calls == [(Path("w.pt"), 100)]
+    assert recognizer.model == "model" and recognizer.class_to_sign == CLASSES
+    assert (recognizer.model_version, recognizer.min_prob, recognizer.min_margin) == ("v1", 0.3, 2.5)
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"preprocessingVersion": "other"},
+        {"frameCount": 64},
+        {"frameCount": True},
+        {"numClasses": 1},
+        {"numClasses": "100"},
+        {"classMap": {"3": "HELLO", "x": "YES"}},
+        {"classMap": {"3": "HELLO", "100": "YES"}},
+        {"classMap": {"3": "HELLO", "-7": "YES"}},
+        {"classMap": {"3": "HELLO", "03": "YES"}},
+        {"classMap": {"3": "HELLO", "7": "HELLO"}},
+        {"classMap": {"3": "HELLO"}},
+        {"classMap": {"3": "HELLO", "7": "WATER"}},
+        {"classMap": ["HELLO", "YES"]},
+        {"minProb": 1.5},
+        {"minProb": "0.25"},
+        {"minProb": None},
+        {"minMargin": -1},
+        {"minMargin": True},
+        {"minMargin": float("nan")},
+    ],
+)
+def test_invalid_wlasl_settings_not_ready(overrides):
+    with pytest.raises(ModelNotReady):
+        w.read_settings(wlasl_manifest(**overrides))

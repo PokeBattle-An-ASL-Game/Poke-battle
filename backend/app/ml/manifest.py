@@ -1,11 +1,12 @@
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from .features import EXTRACTOR_VERSION, FRAME_COUNT, extractor_fingerprint
 
 MANIFEST_FILE = "manifest.json"
+RAW_VIDEO_FORMATS = frozenset({"wlasl-i3d"})
 
 
 class ManifestError(Exception):
@@ -19,6 +20,7 @@ class ModelManifest:
     labels: tuple[str, ...]
     qualified_labels: frozenset[str]
     weights_path: Path
+    settings: dict = field(default_factory=dict, compare=False, repr=False)
 
 
 def sha256_file(path: Path) -> str:
@@ -47,12 +49,14 @@ def load_manifest(model_dir: Path, registry: dict[str, str | None]) -> ModelMani
     if not isinstance(data, dict) or data.get("manifestVersion") != 1:
         raise ManifestError("unsupported manifest version")
 
-    if _require(data, "extractorVersion", str) != EXTRACTOR_VERSION:
-        raise ManifestError("extractor version mismatch")
-    if _require(data, "extractorFingerprint", str) != extractor_fingerprint():
-        raise ManifestError("extractor fingerprint mismatch")
-    if _require(data, "frameCount", int) != FRAME_COUNT:
-        raise ManifestError("frame count mismatch")
+    artifact_format = _require(data, "artifactFormat", str)
+    if artifact_format not in RAW_VIDEO_FORMATS:
+        if _require(data, "extractorVersion", str) != EXTRACTOR_VERSION:
+            raise ManifestError("extractor version mismatch")
+        if _require(data, "extractorFingerprint", str) != extractor_fingerprint():
+            raise ManifestError("extractor fingerprint mismatch")
+        if _require(data, "frameCount", int) != FRAME_COUNT:
+            raise ManifestError("frame count mismatch")
 
     labels = _require(data, "labels", list)
     qualified = _require(data, "qualifiedLabels", list)
@@ -72,10 +76,11 @@ def load_manifest(model_dir: Path, registry: dict[str, str | None]) -> ModelMani
 
     return ModelManifest(
         model_version=_require(data, "modelVersion", str),
-        artifact_format=_require(data, "artifactFormat", str),
+        artifact_format=artifact_format,
         labels=tuple(labels),
         qualified_labels=frozenset(qualified),
         weights_path=weights_path,
+        settings=data,
     )
 
 

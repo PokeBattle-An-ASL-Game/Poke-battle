@@ -25,8 +25,16 @@ class ModelNotReady(Exception):
     pass
 
 
-# Filled in once the ML data owner's artifact format is agreed.
-LOADERS: dict[str, Callable[[ModelManifest], Recognizer]] = {}
+def _load_wlasl_i3d(manifest: ModelManifest) -> Recognizer:
+    try:
+        from .wlasl_i3d import load_wlasl_recognizer
+
+        return load_wlasl_recognizer(manifest)
+    except ImportError:
+        raise ModelNotReady("wlasl-i3d runtime not installed") from None
+
+
+LOADERS: dict[str, Callable[[ModelManifest], Recognizer]] = {"wlasl-i3d": _load_wlasl_i3d}
 
 
 def load_recognizer(model_dir: Path, registry: dict[str, str | None]) -> tuple[Recognizer, ModelManifest]:
