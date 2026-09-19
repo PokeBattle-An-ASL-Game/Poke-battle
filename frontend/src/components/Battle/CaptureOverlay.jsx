@@ -21,6 +21,22 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function PokeballSpinner() {
+  return (
+    <div style={{
+      width: '4.4cqw', height: '4.4cqw', borderRadius: '50%',
+      background: '#f4ead6', border: '.3cqw solid #151f24', position: 'relative',
+      overflow: 'hidden', animation: 'sb-pokeball-spin .8s linear infinite', flex: 'none',
+    }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '50%', background: '#e35d4f', borderBottom: '.3cqw solid #151f24' }} />
+      <div style={{
+        position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
+        width: '1.4cqw', height: '1.4cqw', borderRadius: '50%', background: '#f4ead6', border: '.3cqw solid #151f24',
+      }} />
+    </div>
+  );
+}
+
 export default function CaptureOverlay({ state, selectedWord, onSubmit, onCancel, setRecording, setFrameProgress }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -63,9 +79,8 @@ export default function CaptureOverlay({ state, selectedWord, onSubmit, onCancel
   };
 
   const framePct = Math.min(100, (state.frames / FRAME_COUNT) * 100);
-  const captureLabel = state.phase === 'SUBMITTING'
-    ? 'submitting… awaiting validation'
-    : Math.min(FRAME_COUNT, state.frames) + ' / ' + FRAME_COUNT + ' frames';
+  const isLoading = state.phase === 'SUBMITTING';
+  const captureLabel = isLoading ? 'CATCHING YOUR SIGN…' : Math.round(framePct) + '%';
   const canRecord = state.phase === 'CAPTURE' && !state.recording && cameraReady;
   const canCancel = state.phase === 'CAPTURE' && !state.recording;
 
@@ -85,14 +100,24 @@ export default function CaptureOverlay({ state, selectedWord, onSubmit, onCancel
         {state.recording && (
           <span style={{ position: 'absolute', top: '6%', left: '6%', fontSize: '1.6cqw', color: '#e35d4f', animation: 'sb-rec 1s steps(1) infinite' }}>● REC</span>
         )}
+        {isLoading && (
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,16,20,.95)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1cqw' }}>
+            <PokeballSpinner />
+            <span style={{ fontFamily: "'Silkscreen',monospace", fontSize: '1.4cqw', letterSpacing: '.08em', color: '#e0a13b' }}>{captureLabel}</span>
+          </div>
+        )}
       </div>
-      <div style={{ width: '40%', height: '1.2cqw', background: '#1c2a31' }}>
-        <div style={{ height: '100%', background: '#e0a13b', transition: 'width .1s linear', width: framePct + '%' }} />
-      </div>
-      <div style={{ fontSize: '1.5cqw', color: '#8fa1a8', fontFamily: "'IBM Plex Mono',monospace" }}>{captureLabel}</div>
+      {!isLoading && (
+        <>
+          <div style={{ width: '40%', height: '1.2cqw', background: '#1c2a31' }}>
+            <div style={{ height: '100%', background: '#e0a13b', transition: 'width .1s linear', width: framePct + '%' }} />
+          </div>
+          <div style={{ fontSize: '1.5cqw', color: '#8fa1a8', fontFamily: "'IBM Plex Mono',monospace" }}>{captureLabel}</div>
+        </>
+      )}
       <div style={{ display: 'flex', gap: '1.2cqw', alignItems: 'center' }}>
         {canRecord && (
-          <button onClick={handleRecord} style={{ fontFamily: "'Silkscreen',monospace", fontSize: '1.9cqw', padding: '1.2cqw 2.4cqw', background: '#e0a13b', border: 'none', color: '#151f24', cursor: 'pointer' }}>RECORD {FRAME_COUNT} FRAMES</button>
+          <button onClick={handleRecord} style={{ fontFamily: "'Silkscreen',monospace", fontSize: '1.9cqw', padding: '1.2cqw 2.4cqw', background: '#e0a13b', border: 'none', color: '#151f24', cursor: 'pointer' }}>RECORD</button>
         )}
         {canCancel && (
           <button onClick={onCancel} style={{ fontFamily: "'Silkscreen',monospace", fontSize: '1.9cqw', padding: '1.2cqw 2.4cqw', background: 'transparent', border: '1px solid #3f565f', color: '#9fb3ba', cursor: 'pointer' }}>CANCEL</button>

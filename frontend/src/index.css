@@ -106,6 +106,10 @@ button {
   55% { transform: scale(1.06) translateY(0); opacity: 1; }
   100% { transform: scale(1) translateY(0); opacity: 1; }
 }
+@keyframes sb-pokeball-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .001ms !important; }
