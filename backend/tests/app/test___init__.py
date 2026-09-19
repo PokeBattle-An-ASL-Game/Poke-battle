@@ -55,8 +55,16 @@ def test_cors_preflight_allows_configured_origin_only(make_client):
     assert "Access-Control-Allow-Origin" not in denied.headers
 
 
-def test_real_repo_data_starts_honestly_unavailable(post_attempt):
+def test_real_repo_data_without_model_is_not_ready(post_attempt):
     client = create_app().test_client()
     assert client.application.extensions["pookie"]["recognizer"] is None
     response = post_attempt(client)
-    assert (response.status_code, response.get_json()["error"]["code"]) == (422, "LEVEL_UNAVAILABLE")
+    assert (response.status_code, response.get_json()["error"]["code"]) == (503, "MODEL_NOT_READY")
+
+
+def test_real_repo_signs_stay_unavailable_even_with_a_model(post_attempt, fake_recognizer, fake_manifest):
+    recognizer = fake_recognizer()
+    client = create_app(recognizer=recognizer, manifest=fake_manifest).test_client()
+    response = post_attempt(client)
+    assert (response.status_code, response.get_json()["error"]["code"]) == (422, "SIGN_UNAVAILABLE")
+    assert recognizer.calls == 0

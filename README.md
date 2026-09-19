@@ -2,7 +2,7 @@
 
 A Pokémon-style battle game where players attack by performing American Sign Language (ASL) words in front of their webcam.
 
-> **Status: in development.** The React UI and the Flask `POST /api/validate-sign` backend exist, but there is **no working ASL recognition yet**: the UI's camera step is still simulated, no model manifest is installed, and all seven levels are `available: false` until each sign is validated.
+> **Status: in development.** The React UI and the Flask `POST /api/validate-sign` backend exist, but there is **no working ASL recognition yet**: the UI's camera step is still simulated, and no model manifest is installed. All seven levels are `available: true` (team decision), but the server only judges a sign once it is validated (see below).
 
 ## Planned architecture
 
@@ -98,5 +98,5 @@ Every possible API response is listed in `shared/api-examples/responses.json`; a
 ## Contributing rules
 
 - Don't commit `.env` files, API keys, datasets, videos, extracted features or model weights (see `.gitignore`).
-- Don't set a level to `available: true` until every sign in it has reviewed teaching material, confirmed usage rights and measured model support.
+- Levels are `available: true` by team decision. The server only judges a sign that has a `modelLabel` in `shared/signs.json` and is in the model's `qualifiedLabels`; otherwise it answers `422 SIGN_UNAVAILABLE`. Don't add either until the sign has reviewed teaching material, confirmed usage rights and measured model support.
 - Don't present mock or simulated recognition as a working ASL model.
