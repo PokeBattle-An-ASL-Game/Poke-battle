@@ -2,7 +2,7 @@
 
 A Pokémon-style battle game where players attack by performing American Sign Language (ASL) words in front of their webcam.
 
-> **Status: in development.** The React UI and the Flask `POST /api/validate-sign` backend exist, but there is **no working ASL recognition yet**: the UI's camera step is still simulated, and no model manifest is installed. All seven levels are `available: true` (team decision), but the server only judges a sign once it is validated (see below).
+> **Status: in development.** The React UI and the Flask `POST /api/validate-sign` backend exist. A provisional WLASL100 I3D manifest template is committed, but recognition is **not webcam-validated** yet and the UI's camera step is still simulated. All seven levels are `available: true` (team decision), but the server only judges a sign once it is validated (see below).
 
 ## Planned architecture
 
@@ -81,7 +81,7 @@ The backend can run the pretrained WLASL100 I3D video model. **The WLASL dataset
 .venv/bin/python -m app.ml.wlasl_torch /path/to/FINAL_nslt_100_iters=896_top1=65.89_top5=84.11_top10=89.92.pt
 ```
 
-This downloads WLASL's `pytorch_i3d.py` (pinned commit, SHA-256 checked) into `app/ml/artifacts/wlasl/` and copies the checkpoint to `app/ml/artifacts/wlasl100_i3d.pt` after checking its SHA-256. The server still answers `503 MODEL_NOT_READY` until a `manifest.json` with the agreed class map and webcam-tested thresholds is added.
+This downloads WLASL's `pytorch_i3d.py` (pinned commit, SHA-256 checked) into `app/ml/artifacts/wlasl/`, copies the checkpoint to `app/ml/artifacts/wlasl100_i3d.pt` after checking its SHA-256, and writes `app/ml/artifacts/manifest.json` from the committed template `backend/app/ml/wlasl100_manifest.json` (18 provisional WLASL signs, `minProb` 0.25, `minMargin` 3.0). Vocabulary and thresholds remain provisional until webcam validation is complete; do not treat install as a production-ready recognizer.
 
 With the server running, `tools/sample_request.sh [base_url] [levelId] [moveId]` sends one real request built with `Config.FRAME_COUNT` frames (64 by default). Until a qualified model exists and a level is enabled, expect `422 LEVEL_UNAVAILABLE` or `503 MODEL_NOT_READY`; that is the intended honest behaviour.
 
