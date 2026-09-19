@@ -43,5 +43,27 @@ def test_registered_loader_is_used(tmp_path, monkeypatch):
     assert recognizer.predict_sequence([], []).reason == "uncertain_prediction"
 
 
-def test_no_loaders_registered_by_default():
-    assert r.LOADERS == {}
+def test_only_wlasl_loader_registered_by_default():
+    assert set(r.LOADERS) == {"wlasl-i3d"}
+
+
+def test_wlasl_loader_is_used(tmp_path, monkeypatch):
+    from app.ml import wlasl_i3d
+
+    monkeypatch.setattr(wlasl_i3d, "load_wlasl_recognizer", lambda manifest: ("built", manifest.model_version))
+    write_model(tmp_path, artifact_format="wlasl-i3d")
+    recognizer, _ = r.load_recognizer(tmp_path, REGISTRY)
+    assert recognizer == ("built", "stub-v1")
+
+
+def test_missing_wlasl_runtime_is_not_ready(tmp_path, monkeypatch):
+    from app.ml import wlasl_i3d
+
+    def no_runtime(weights_path, num_classes):
+        raise ModuleNotFoundError("torch")
+
+    monkeypatch.setattr(wlasl_i3d, "read_settings", lambda manifest: ({}, 100, 0.25, 3.0))
+    monkeypatch.setattr(wlasl_i3d, "build_model", no_runtime)
+    write_model(tmp_path, artifact_format="wlasl-i3d")
+    with pytest.raises(r.ModelNotReady, match="runtime not installed"):
+        r.load_recognizer(tmp_path, REGISTRY)

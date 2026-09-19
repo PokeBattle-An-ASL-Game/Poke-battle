@@ -64,6 +64,20 @@ def test_invalid_manifest_rejected(tmp_path, overrides):
         m.load_manifest(tmp_path, REGISTRY)
 
 
+def test_wlasl_manifest_skips_landmark_checks(tmp_path):
+    write_model(tmp_path, artifactFormat="wlasl-i3d", extractorVersion=None, extractorFingerprint=None,
+                frameCount=64, numClasses=100)
+    manifest = m.load_manifest(tmp_path, REGISTRY)
+    assert manifest.artifact_format == "wlasl-i3d"
+    assert manifest.settings["numClasses"] == 100
+
+
+def test_other_formats_keep_landmark_checks(tmp_path):
+    write_model(tmp_path, extractorVersion=None)
+    with pytest.raises(m.ManifestError, match="extractorVersion"):
+        m.load_manifest(tmp_path, REGISTRY)
+
+
 def test_tampered_weights_rejected(tmp_path):
     write_model(tmp_path, weights=b"swapped")
     with pytest.raises(m.ManifestError, match="checksum"):

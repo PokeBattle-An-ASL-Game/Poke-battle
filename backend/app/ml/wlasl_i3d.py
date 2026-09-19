@@ -1,10 +1,15 @@
+import math
 from typing import Callable, Sequence
 
 import cv2
 import numpy as np
 
-from .recognizer import Prediction
+from ..config import Config
+from .manifest import ModelManifest
+from .recognizer import ModelNotReady, Prediction
 
+FORMAT = "wlasl-i3d"
+PREPROCESSING_VERSION = "wlasl-i3d-bgr-fit256-crop224-max64-v1"
 SHORT_SIDE = 256
 CROP = 224
 MAX_FRAMES = 64
@@ -65,3 +70,44 @@ class WlaslRecognizer:
         logits = np.asarray(self.model(preprocess(frames_rgb)), dtype=np.float64)
         scores = logits[0].max(axis=1)
         return decide(scores, self.class_to_sign, self.model_version, self.min_prob, self.min_margin)
+
+
+def _number(value, low: float, high: float) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) and low <= value <= high
+
+
+def read_settings(manifest: ModelManifest) -> tuple[dict[int, str], int, float, float]:
+    data = manifest.settings
+    if data.get("preprocessingVersion") != PREPROCESSING_VERSION:
+        raise ModelNotReady("wlasl preprocessing version mismatch")
+    frame_count = data.get("frameCount")
+    if isinstance(frame_count, bool) or frame_count != Config.FRAME_COUNT:
+        raise ModelNotReady("wlasl frame count mismatch")
+    num_classes = data.get("numClasses")
+    if not isinstance(num_classes, int) or isinstance(num_classes, bool) or num_classes < 2:
+        raise ModelNotReady("wlasl numClasses invalid")
+    class_map = data.get("classMap")
+    if not isinstance(class_map, dict) or not all(
+        isinstance(key, str) and key.isascii() and key.isdigit() and int(key) < num_classes for key in class_map
+    ):
+        raise ModelNotReady("wlasl classMap keys must be class indices")
+    class_to_sign = {int(key): sign for key, sign in class_map.items()}
+    signs = list(class_to_sign.values())
+    if len(class_to_sign) != len(class_map) or len(set(signs)) != len(signs) or set(signs) != set(manifest.labels):
+        raise ModelNotReady("wlasl classMap must map one class to each label")
+    min_prob, min_margin = data.get("minProb"), data.get("minMargin")
+    if not _number(min_prob, 0.0, 1.0) or not _number(min_margin, 0.0, math.inf):
+        raise ModelNotReady("wlasl thresholds invalid")
+    return class_to_sign, num_classes, float(min_prob), float(min_margin)
+
+
+def build_model(weights_path, num_classes: int) -> Callable[[np.ndarray], np.ndarray]:
+    from .wlasl_torch import load_i3d
+
+    return load_i3d(weights_path, num_classes)
+
+
+def load_wlasl_recognizer(manifest: ModelManifest) -> WlaslRecognizer:
+    class_to_sign, num_classes, min_prob, min_margin = read_settings(manifest)
+    model = build_model(manifest.weights_path, num_classes)
+    return WlaslRecognizer(model, class_to_sign, manifest.model_version, min_prob, min_margin)
