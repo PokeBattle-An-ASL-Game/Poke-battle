@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import pytest
 
+from app.config import Config
 from app.ml import wlasl_i3d as w
 from app.ml.manifest import ModelManifest
 from app.ml.recognizer import ModelNotReady
@@ -110,7 +111,7 @@ def test_recognizer_takes_max_logit_over_time():
 
 
 def wlasl_manifest(**overrides):
-    settings = {"preprocessingVersion": w.PREPROCESSING_VERSION, "frameCount": 25, "numClasses": 100,
+    settings = {"preprocessingVersion": w.PREPROCESSING_VERSION, "frameCount": Config.FRAME_COUNT, "numClasses": 100,
                 "classMap": {"3": "HELLO", "7": "YES"}, "minProb": 0.3, "minMargin": 2.5, **overrides}
     return ModelManifest("v1", "wlasl-i3d", ("HELLO", "YES"), frozenset({"HELLO"}), Path("w.pt"), settings)
 
@@ -128,7 +129,7 @@ def test_loader_builds_recognizer_from_manifest(monkeypatch):
     "overrides",
     [
         {"preprocessingVersion": "other"},
-        {"frameCount": 64},
+        {"frameCount": Config.FRAME_COUNT + 1},
         {"frameCount": True},
         {"numClasses": 1},
         {"numClasses": "100"},
