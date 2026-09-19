@@ -2,7 +2,7 @@
 # Usage: backend/tools/sample_request.sh [base_url] [levelId] [moveId]
 set -euo pipefail
 
-BASE_URL="${1:-http://localhost:5000}"
+BASE_URL="${1:-http://localhost:5001}"
 LEVEL_ID="${2:-1}"
 MOVE_ID="${3:-move-1}"
 BACKEND_DIR="$(cd "$(dirname "$0")/.." && pwd)"
