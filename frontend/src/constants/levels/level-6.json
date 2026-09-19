@@ -42,42 +42,48 @@
       "signId": "FINISH",
       "difficulty": "easy",
       "damage": 10,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/FINISH.png"
     },
     {
       "id": "move-2",
       "signId": "TABLE",
       "difficulty": "easy",
       "damage": 10,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/TABLE.png"
     },
     {
       "id": "move-3",
       "signId": "YEAR",
       "difficulty": "medium",
       "damage": 15,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/YEAR.png"
     },
     {
       "id": "move-4",
       "signId": "HOT",
       "difficulty": "medium",
       "damage": 15,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/HOT.png"
     },
     {
       "id": "move-5",
       "signId": "BIRD",
       "difficulty": "hard",
       "damage": 20,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/BIRD.png"
     },
     {
       "id": "move-6",
       "signId": "NO",
       "difficulty": "hard",
       "damage": 30,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/NO.png"
     }
   ]
 }

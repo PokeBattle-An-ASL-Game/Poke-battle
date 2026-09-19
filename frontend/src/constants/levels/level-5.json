@@ -42,35 +42,40 @@
       "signId": "SECRETARY",
       "difficulty": "easy",
       "damage": 10,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/SECRETARY.png"
     },
     {
       "id": "move-2",
       "signId": "TELL",
       "difficulty": "easy",
       "damage": 15,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/TELL.png"
     },
     {
       "id": "move-3",
       "signId": "COMPUTER",
       "difficulty": "medium",
       "damage": 20,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/COMPUTER.png"
     },
     {
       "id": "move-4",
       "signId": "BLACK",
       "difficulty": "medium",
       "damage": 25,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/BLACK.png"
     },
     {
       "id": "move-5",
       "signId": "CITY",
       "difficulty": "hard",
       "damage": 30,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/CITY.png"
     }
   ]
 }

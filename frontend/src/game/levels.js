@@ -127,6 +127,7 @@ export function moveList(level) {
     word: (SIGNS_BY_ID[m.signId] && SIGNS_BY_ID[m.signId].displayText) || m.signId.replace(/_/g, ' '),
     difficulty: m.difficulty,
     damage: m.damage,
+    hintImage: m.hintImage || null,
   }));
 }
 
