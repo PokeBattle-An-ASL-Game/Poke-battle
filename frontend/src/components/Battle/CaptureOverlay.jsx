@@ -4,7 +4,16 @@ import { CAPTURE_HEIGHT, CAPTURE_INTERVAL_MS, CAPTURE_WIDTH, FRAME_COUNT, JPEG_Q
 function captureFrame(video, canvas) {
   canvas.width = CAPTURE_WIDTH;
   canvas.height = CAPTURE_HEIGHT;
-  canvas.getContext('2d').drawImage(video, 0, 0, CAPTURE_WIDTH, CAPTURE_HEIGHT);
+  const videoWidth = video.videoWidth || CAPTURE_WIDTH;
+  const videoHeight = video.videoHeight || CAPTURE_HEIGHT;
+  const scale = Math.min(videoWidth / CAPTURE_WIDTH, videoHeight / CAPTURE_HEIGHT);
+  const cropWidth = CAPTURE_WIDTH * scale;
+  const cropHeight = CAPTURE_HEIGHT * scale;
+  canvas.getContext('2d').drawImage(
+    video,
+    (videoWidth - cropWidth) / 2, (videoHeight - cropHeight) / 2, cropWidth, cropHeight,
+    0, 0, CAPTURE_WIDTH, CAPTURE_HEIGHT,
+  );
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', JPEG_QUALITY));
 }
 

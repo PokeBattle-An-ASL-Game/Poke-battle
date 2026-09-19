@@ -47,6 +47,8 @@ python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('frontend/s
 
 ### Frontend (React + Vite)
 
+Uses Node 22.13.0 (pinned in `frontend/.nvmrc` and `frontend/.tool-versions`; `nvm use` or asdf picks it up).
+
 ```bash
 cd frontend
 npm install
