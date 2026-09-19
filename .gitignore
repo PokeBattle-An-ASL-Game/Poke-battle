@@ -66,3 +66,4 @@ frontend/public/assets/pokemon/*.png
 frontend/public/assets/audio/*.mp3
 frontend/public/assets/audio/*.wav
 frontend/public/assets/audio/*.ogg
+*.task

@@ -1,4 +1,4 @@
-# PokeBattle
+# PookieBattle
 
 A Pokémon-style battle game where players attack by performing American Sign Language (ASL) words in front of their webcam.
 
@@ -35,6 +35,8 @@ Prerequisites (for the upcoming app code): Node.js 18+ and Python 3.10+.
 git clone https://github.com/RohithNair27/Poke-battle.git
 cd Poke-battle
 ```
+
+(The repository will be renamed to `pookie-battle`; update the URL above once that rename happens on GitHub.)
 
 To check that the level JSON files parse:
 
