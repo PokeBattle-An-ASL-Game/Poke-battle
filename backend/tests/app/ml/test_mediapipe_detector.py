@@ -1,16 +1,10 @@
-import os
-from pathlib import Path
-
 import numpy as np
 import pytest
 
-from app.config import REPO_ROOT
-from app.ml.features import FrameLandmarks
+from app.ml.features import LANDMARK_MODEL_SHA256, FrameLandmarks
+from app.ml.holistic_model import DEFAULT_PATH as MODEL_PATH
+from app.ml.manifest import sha256_file
 from app.ml.mediapipe_detector import LEFT_WRIST, RIGHT_WRIST, _to_array, assign_hands
-
-MODEL_PATH = Path(
-    os.environ.get("POOKIE_HOLISTIC_MODEL", REPO_ROOT / "backend/app/ml/artifacts/mediapipe/holistic_landmarker.task")
-)
 
 
 def pose_with_wrists(left, right):
@@ -68,6 +62,8 @@ def test_to_array_handles_flat_and_nested_lists():
 def test_real_mediapipe_runs_on_empty_frame():
     pytest.importorskip("mediapipe")
     from app.ml.mediapipe_detector import MediaPipeHolisticDetector
+
+    assert sha256_file(MODEL_PATH) == LANDMARK_MODEL_SHA256
 
     detector = MediaPipeHolisticDetector(MODEL_PATH)
     try:

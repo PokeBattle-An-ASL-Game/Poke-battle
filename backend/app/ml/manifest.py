@@ -21,7 +21,7 @@ class ModelManifest:
     weights_path: Path
 
 
-def _sha256(path: Path) -> str:
+def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1 << 20), b""):
@@ -67,7 +67,7 @@ def load_manifest(model_dir: Path, registry: dict[str, str | None]) -> ModelMani
     if Path(weights_file).name != weights_file or weights_file.startswith("."):
         raise ManifestError("weights file must be a plain file name")
     weights_path = Path(model_dir) / weights_file
-    if not weights_path.is_file() or _sha256(weights_path) != _require(data, "weightsSha256", str):
+    if not weights_path.is_file() or sha256_file(weights_path) != _require(data, "weightsSha256", str):
         raise ManifestError("weights missing or checksum mismatch")
 
     return ModelManifest(
