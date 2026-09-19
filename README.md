@@ -2,7 +2,7 @@
 
 A Pokémon-style battle game where players attack by performing American Sign Language (ASL) words in front of their webcam.
 
-> **Status: in development.** The React UI and the Flask `POST /api/validate-sign` backend exist. A provisional WLASL100 I3D manifest template is committed, but recognition is **not webcam-validated** yet and the UI's camera step is still simulated. All seven levels are `available: true` (team decision), but the server only judges a sign once it is validated (see below).
+> **Status: in development.** The React UI and the Flask `POST /api/validate-sign` backend exist. A provisional WLASL100 I3D manifest template is committed, but recognition is **not webcam-validated** yet and the UI's camera step is still simulated. Only level 1 unlocks by default — the rest open as the player clears their way up, tracked in `localStorage` — and the server only judges a sign once it is validated (see below).
 
 ## Planned architecture
 
@@ -16,8 +16,8 @@ The backend never stores HP, PP, moves, progress, camera images or landmarks. Th
 
 ## Game data
 
-- `frontend/src/constants/levels.json` — index of the seven level cards (all `available: true`).
-- `frontend/src/constants/levels/level-1.json` … `level-7.json` — each level's own moves, damage and opponent. **18 unique WLASL signs** are reused across **30 move slots**, split 2/3/4/4/5/6/6 across the levels.
+- `frontend/src/constants/levels.json` — index of the seven level cards; its `available` flags are only design defaults, seeded into `localStorage` on first load with just level 1 unlocked.
+- `frontend/src/constants/levels/level-1.json` … `level-7.json` — each level's own moves, damage and opponent. **18 unique WLASL signs** are reused across **29 move slots**, split 2/2/4/4/5/6/6 across the levels.
   - A sign may repeat across different levels, but never twice within the same level.
   - Every move has `maxPP: 1`; move damage in each level sums to the opponent's 100 HP.
   - Opponent attacks deal 10 HP.
@@ -102,5 +102,5 @@ Every possible API response is listed in `shared/api-examples/responses.json`; a
 ## Contributing rules
 
 - Don't commit `.env` files, API keys, datasets, videos, extracted features or model weights (see `.gitignore`).
-- Levels are `available: true` by team decision. The game uses **18 unique WLASL signs** across **30 move slots** (signs may repeat across levels, not within one level). The server only judges a sign that has a `modelLabel` in `shared/signs.json` and is in the model's `qualifiedLabels`; otherwise it answers `422 SIGN_UNAVAILABLE`. Vocabulary and thresholds remain provisional until webcam validation is complete. Don't add a sign to `qualifiedLabels` until it has reviewed teaching material, confirmed usage rights and measured model support.
+- Only level 1 is unlocked by default; later levels unlock as the player clears their way up, tracked in `localStorage` (`pookie.levels`), seeded from `levels.json` on first load. The game uses **18 unique WLASL signs** across **29 move slots** (signs may repeat across levels, not within one level). The server only judges a sign that has a `modelLabel` in `shared/signs.json` and is in the model's `qualifiedLabels`; otherwise it answers `422 SIGN_UNAVAILABLE`. Vocabulary and thresholds remain provisional until webcam validation is complete. Don't add a sign to `qualifiedLabels` until it has reviewed teaching material, confirmed usage rights and measured model support.
 - Don't present mock or simulated recognition as a working ASL model.

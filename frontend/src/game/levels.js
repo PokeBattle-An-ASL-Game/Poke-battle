@@ -10,9 +10,36 @@ import signRegistry from '../../../shared/signs.json';
 
 const RAW_LEVELS_BY_ID = { 1: level1, 2: level2, 3: level3, 4: level4, 5: level5, 6: level6, 7: level7 };
 
-// levels.json is the source of truth for name/image/available — it can be edited
+export const LEVELS_KEY = 'pookie.levels';
+
+// First load: seed localStorage from levels.json, but only level 1 starts
+// available — levels.json's own `available` flags are just the design
+// defaults and are ignored here. Every later load reads the player's
+// actual progress back out of localStorage instead.
+function seedLevelsIndex() {
+  return levelsIndex.levels.map((entry) => ({ ...entry, available: entry.id === 1 }));
+}
+
+function loadLevelsIndex() {
+  try {
+    const raw = localStorage.getItem(LEVELS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length) return parsed;
+    }
+  } catch (e) { /* localStorage unavailable or corrupt — reseed below */ }
+  const seeded = seedLevelsIndex();
+  try { localStorage.setItem(LEVELS_KEY, JSON.stringify(seeded)); } catch (e) { /* localStorage unavailable — progress stays session-only */ }
+  return seeded;
+}
+
+const storedIndex = loadLevelsIndex();
+
+// levels.json is the source of truth for name/image — it can be edited
 // without touching each level's move/opponent data in level-N.json.
-export const LEVELS = levelsIndex.levels.map((entry) => {
+// `available` comes from the stored index above and is mutated in place
+// by unlockLevel() as the player progresses.
+export const LEVELS = storedIndex.map((entry) => {
   const raw = RAW_LEVELS_BY_ID[entry.id];
   return {
     ...raw,
@@ -21,6 +48,16 @@ export const LEVELS = levelsIndex.levels.map((entry) => {
     opponentPokemon: { ...raw.opponentPokemon, image: entry.image || raw.opponentPokemon.image },
   };
 });
+
+// Marks a level unlocked and persists it straight back to localStorage.
+export function unlockLevel(id) {
+  const level = LEVELS.find((lvl) => lvl.id === id);
+  const entry = storedIndex.find((e) => e.id === id);
+  if (!level || !entry || level.available) return;
+  level.available = true;
+  entry.available = true;
+  try { localStorage.setItem(LEVELS_KEY, JSON.stringify(storedIndex)); } catch (e) { /* localStorage unavailable — progress stays session-only */ }
+}
 
 export const SIGNS_BY_ID = Object.fromEntries(
   signRegistry.signs.map((sign) => [sign.id, sign])
@@ -72,28 +109,8 @@ export function levelById(id) {
   return LEVELS.find((lvl) => lvl.id === id);
 }
 
-export const UNLOCK_KEY = 'pookie.unlocked';
-
-export function readUnlocked() {
-  try {
-    return Math.max(1, Math.min(7, parseInt(localStorage.getItem(UNLOCK_KEY), 10) || 1));
-  } catch (e) {
-    return 1;
-  }
-}
-
-export function writeUnlocked(id) {
-  try {
-    localStorage.setItem(UNLOCK_KEY, String(id));
-  } catch (e) {
-    /* localStorage unavailable (private mode, etc.) — unlock stays session-only */
-  }
-}
-
-// A level is playable if the design has it flagged available, or the player
-// has cleared their way up to it (progress persisted via readUnlocked/writeUnlocked).
-export function isLevelAvailable(level, unlocked) {
-  return level.available || level.id <= unlocked;
+export function isLevelAvailable(level) {
+  return level.available;
 }
 
 export function opponentName(level) {

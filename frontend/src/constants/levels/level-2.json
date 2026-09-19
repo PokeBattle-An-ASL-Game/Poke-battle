@@ -40,21 +40,14 @@
       "id": "move-1",
       "signId": "YEAR",
       "difficulty": "easy",
-      "damage": 25,
+      "damage": 40,
       "maxPP": 1
     },
     {
       "id": "move-2",
-      "signId": "HOT",
-      "difficulty": "medium",
-      "damage": 35,
-      "maxPP": 1
-    },
-    {
-      "id": "move-3",
       "signId": "BIRD",
       "difficulty": "hard",
-      "damage": 40,
+      "damage": 60,
       "maxPP": 1
     }
   ],
