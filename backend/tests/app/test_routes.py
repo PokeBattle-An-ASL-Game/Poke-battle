@@ -117,6 +117,18 @@ def test_oversized_request_is_413(make_client, post_attempt):
     assert (response.status_code, error_code(response)) == (413, "UPLOAD_TOO_LARGE")
 
 
+def test_logs_never_contain_request_details(make_client, post_attempt, fake_recognizer, caplog):
+    caplog.set_level("DEBUG")
+    rid = "583fe810-53c8-42ab-9c70-64f7264c8255"
+    post_attempt(make_client(), requestId=rid)
+    post_attempt(make_client(), requestId=rid, levelId="2")
+    post_attempt(make_client(fake_recognizer(error=RuntimeError("secret landmark data"))), requestId=rid)
+    logged = "\n".join(record.getMessage() for record in caplog.records)
+    assert "inference failed" in logged
+    for private in (rid, "f0.jpg", "127.0.0.1", "secret landmark data", "\xff\xd8"):
+        assert private not in logged
+
+
 def test_non_multipart_rejected(make_client):
     response = make_client().post("/api/validate-sign", json={"levelId": 1})
     assert (response.status_code, error_code(response)) == (400, "BAD_REQUEST")

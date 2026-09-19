@@ -57,6 +57,12 @@ python3.12 -m venv .venv
 .venv/bin/flask --app "app:create_app()" run   # serves http://localhost:5000
 ```
 
+For production use gunicorn instead of the Flask dev server (no access log, so client IPs are never logged; uploads stay in memory):
+
+```bash
+POOKIE_BIND=127.0.0.1:8000 POOKIE_CORS_ORIGINS=https://your-frontend.example .venv/bin/gunicorn -c gunicorn_config.py wsgi:app
+```
+
 With the server running, `tools/sample_request.sh [base_url] [levelId] [moveId]` sends one real 25-frame request. Until a qualified model exists and a level is enabled, expect `422 LEVEL_UNAVAILABLE` or `503 MODEL_NOT_READY`; that is the intended honest behaviour.
 
 Environment variables (all optional):

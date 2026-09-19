@@ -1,6 +1,7 @@
+import io
 import logging
 
-from flask import Flask
+from flask import Flask, Request
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 
@@ -12,8 +13,14 @@ from .routes import api, error_response
 log = logging.getLogger(__name__)
 
 
+class InMemoryRequest(Request):
+    def _get_file_stream(self, total_content_length, content_type, filename=None, content_length=None):
+        return io.BytesIO()
+
+
 def create_app(overrides=None, recognizer=None, manifest=None) -> Flask:
     app = Flask(__name__, static_folder=None)
+    app.request_class = InMemoryRequest
     app.config.from_object(Config)
     app.config.update(overrides or {})
     app.json.sort_keys = False

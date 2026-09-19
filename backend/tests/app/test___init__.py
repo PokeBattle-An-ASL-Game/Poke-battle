@@ -1,6 +1,36 @@
+import re
+import tempfile
+
+import werkzeug.formparser
+
 from app import create_app
+from app.config import REPO_ROOT
 
 ORIGIN = "http://localhost:5173"
+
+
+def test_uploads_never_spill_to_disk(make_client, post_attempt, make_jpeg, monkeypatch):
+    def no_disk(*args, **kwargs):
+        raise AssertionError("upload written to a temporary file")
+
+    monkeypatch.setattr(werkzeug.formparser, "SpooledTemporaryFile", no_disk)
+    monkeypatch.setattr(tempfile, "TemporaryFile", no_disk)
+    oversized_frame = b"\xff\xd8\xff" + b"\0" * 600_000
+    response = post_attempt(make_client(), frames=[oversized_frame] + [make_jpeg()] * 24)
+    assert response.status_code == 413
+    assert post_attempt(make_client()).status_code == 200
+
+
+def test_debug_is_off_by_default():
+    app = create_app()
+    assert app.debug is False and app.testing is False
+
+
+def test_no_hardcoded_credentials_in_backend_source():
+    pattern = re.compile(r"(api[_-]?key|secret|password|token)\s*[=:]\s*['\"][^'\"]+['\"]", re.IGNORECASE)
+    sources = [p for p in (REPO_ROOT / "backend").rglob("*.py") if ".venv" not in p.parts]
+    assert sources
+    assert [str(p) for p in sources if pattern.search(p.read_text(encoding="utf-8"))] == []
 
 
 def test_only_one_application_route(make_client):
