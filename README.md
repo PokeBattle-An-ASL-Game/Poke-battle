@@ -63,7 +63,7 @@ python3.12 -m venv .venv
 .venv/bin/pip install -r requirements-ml.txt -r requirements-dev.txt
 .venv/bin/python -m app.ml.holistic_model   # downloads the pinned MediaPipe model and checks its SHA-256
 .venv/bin/python -m pytest                  # run the backend tests
-.venv/bin/flask --app "app:create_app()" run   # serves http://localhost:5000
+.venv/bin/flask --app "app:create_app()" run --port 5001   # serves http://localhost:5001
 ```
 
 For production use gunicorn instead of the Flask dev server (no access log, so client IPs are never logged; uploads stay in memory):
