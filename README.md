@@ -2,7 +2,7 @@
 
 A Pokémon-style battle game where players attack by performing American Sign Language (ASL) words in front of their webcam.
 
-> **Status: early scaffold.** This repository currently contains the hardcoded game data (levels, moves, sign IDs) and asset placeholders only. There is **no playable app, Flask backend, or trained ASL model yet**, and all seven levels are `available: false` until each sign is validated.
+> **Status: in development.** The React UI and the Flask `POST /api/validate-sign` backend exist, but there is **no working ASL recognition yet**: the UI's camera step is still simulated, no model manifest is installed, and all seven levels are `available: false` until each sign is validated.
 
 ## Planned architecture
 
@@ -71,6 +71,16 @@ For production use gunicorn instead of the Flask dev server (no access log, so c
 ```bash
 POOKIE_BIND=127.0.0.1:8000 POOKIE_CORS_ORIGINS=https://your-frontend.example .venv/bin/gunicorn -c gunicorn_config.py wsgi:app
 ```
+
+#### WLASL I3D model (non-commercial only)
+
+The backend can run the pretrained WLASL100 I3D video model. **The WLASL dataset and its pretrained weights are released under the C-UDA licence for academic, non-commercial use only.** Never commit or publicly share the weights. Download WLASL's pretrained weights archive yourself from https://drive.google.com/uc?id=1jALimVOB69ifYkeT0Pe297S1z4U3jC48 and unzip it; the checkpoint is `archived/asl100/FINAL_nslt_100_iters=896_top1=65.89_top5=84.11_top10=89.92.pt` (SHA-256 `a61d7dda5f875ce5ebd9d407c56874f77d1cd2aeb4bc7cd0d98a6e1ca4669a0c`).
+
+```bash
+.venv/bin/python -m app.ml.wlasl_torch /path/to/FINAL_nslt_100_iters=896_top1=65.89_top5=84.11_top10=89.92.pt
+```
+
+This downloads WLASL's `pytorch_i3d.py` (pinned commit, SHA-256 checked) into `app/ml/artifacts/wlasl/` and copies the checkpoint to `app/ml/artifacts/wlasl100_i3d.pt` after checking its SHA-256. The server still answers `503 MODEL_NOT_READY` until a `manifest.json` with the agreed class map and webcam-tested thresholds is added.
 
 With the server running, `tools/sample_request.sh [base_url] [levelId] [moveId]` sends one real 25-frame request. Until a qualified model exists and a level is enabled, expect `422 LEVEL_UNAVAILABLE` or `503 MODEL_NOT_READY`; that is the intended honest behaviour.
 
