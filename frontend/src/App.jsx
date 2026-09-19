@@ -2,13 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import LevelSelect from './components/LevelSelect/LevelSelect.jsx';
 import LevelPreviewModal from './components/LevelPreviewModal.jsx';
 import BattleScreen from './components/Battle/BattleScreen.jsx';
-import { isLevelAvailable, levelById, readUnlocked, writeUnlocked } from './game/levels.js';
+import { isLevelAvailable, levelById, unlockLevel } from './game/levels.js';
 
 function routeFromHash() {
   const m = /^#battle-(\d+)$/.exec(location.hash || '');
   const levelId = m ? +m[1] : null;
   const level = levelId ? levelById(levelId) : null;
-  return level && isLevelAvailable(level, readUnlocked())
+  return level && isLevelAvailable(level)
     ? { screen: 'BATTLE', levelId }
     : { screen: 'SELECT', levelId: null };
 }
@@ -17,7 +17,8 @@ export default function App() {
   const [route, setRoute] = useState(routeFromHash);
   const [previewId, setPreviewId] = useState(null);
   const [intro, setIntro] = useState(true);
-  const [unlocked, setUnlocked] = useState(readUnlocked);
+  // Bumped after unlockLevel() mutates LEVELS in place, so LevelSelect/BattleScreen re-render.
+  const [, bumpLevels] = useState(0);
 
   useEffect(() => {
     const onPopState = () => setRoute(routeFromHash());
@@ -43,8 +44,8 @@ export default function App() {
   }, []);
 
   const onUnlock = useCallback((id) => {
-    writeUnlocked(id);
-    setUnlocked(id);
+    unlockLevel(id);
+    bumpLevels((v) => v + 1);
   }, []);
 
   const isSelect = route.screen === 'SELECT';
@@ -66,7 +67,7 @@ export default function App() {
       )}
 
       {isSelect && (
-        <LevelSelect intro={intro} unlocked={unlocked} onOpenPreview={setPreviewId} />
+        <LevelSelect intro={intro} onOpenPreview={setPreviewId} />
       )}
 
       {previewId && isSelect && (
@@ -77,7 +78,6 @@ export default function App() {
         <BattleScreen
           key={route.levelId}
           levelId={route.levelId}
-          unlocked={unlocked}
           onUnlock={onUnlock}
           onNextLevel={goBattle}
           onGoSelect={goSelect}

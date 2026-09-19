@@ -20,10 +20,9 @@ const RETRY_NOTES = {
   NETWORK_ERROR: 'Could not reach the recognition server.',
 };
 
-function initialState(levelId, unlocked) {
+function initialState(levelId) {
   return {
     levelId,
-    unlocked,
     phase: 'INTRO',
     playerHP: 100,
     opponentHP: 100,
@@ -54,8 +53,8 @@ function initialState(levelId, unlocked) {
   };
 }
 
-export function useBattle(levelId, unlocked, onUnlock) {
-  const [state, setState] = useState(() => initialState(levelId, unlocked));
+export function useBattle(levelId, onUnlock) {
+  const [state, setState] = useState(() => initialState(levelId));
   const stateRef = useRef(state);
   stateRef.current = state;
 
@@ -160,9 +159,9 @@ export function useBattle(levelId, unlocked, onUnlock) {
 
   const victory = useCallback(() => {
     const s = stateRef.current;
-    const nextUnlocked = Math.max(s.unlocked, Math.min(7, s.levelId + 1));
-    if (nextUnlocked !== s.unlocked) onUnlock(nextUnlocked);
-    patch({ phase: 'VICTORY', oppAnim: 'sb-faint .7s ease-in forwards', unlocked: nextUnlocked });
+    const nextId = Math.min(7, s.levelId + 1);
+    if (nextId !== s.levelId) onUnlock(nextId);
+    patch({ phase: 'VICTORY', oppAnim: 'sb-faint .7s ease-in forwards' });
     push('victory — all unique signs completed');
     say(opponentName(level) + ' was defeated!');
     // eslint-disable-next-line react-hooks/exhaustive-deps

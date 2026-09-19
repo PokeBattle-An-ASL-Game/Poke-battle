@@ -9,8 +9,8 @@ import CaptureOverlay from './CaptureOverlay.jsx';
 import HintModal from './HintModal.jsx';
 import EndScreen from './EndScreen.jsx';
 
-export default function BattleScreen({ levelId, unlocked, onUnlock, onNextLevel, onGoSelect }) {
-  const battle = useBattle(levelId, unlocked, onUnlock);
+export default function BattleScreen({ levelId, onUnlock, onNextLevel, onGoSelect }) {
+  const battle = useBattle(levelId, onUnlock);
   const { state, level, moves, byId } = battle;
 
   const capturing = state.phase === 'CAPTURE' || state.phase === 'SUBMITTING';
@@ -25,7 +25,7 @@ export default function BattleScreen({ levelId, unlocked, onUnlock, onNextLevel,
   const plyOpacity = (state.phase === 'DEFEAT' || state.entering === 'ball' || state.entering === 'burst') ? 0 : 1;
   const selected = state.selected ? byId[state.selected] : null;
   const nextLevel = LEVELS.find((lvl) => lvl.id === levelId + 1);
-  const nextAvailable = Boolean(nextLevel && isLevelAvailable(nextLevel, state.unlocked));
+  const nextAvailable = Boolean(nextLevel && isLevelAvailable(nextLevel));
 
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
