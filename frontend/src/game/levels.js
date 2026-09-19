@@ -1,3 +1,4 @@
+import levelsIndex from '../constants/levels.json';
 import level1 from '../constants/levels/level-1.json';
 import level2 from '../constants/levels/level-2.json';
 import level3 from '../constants/levels/level-3.json';
@@ -7,7 +8,19 @@ import level6 from '../constants/levels/level-6.json';
 import level7 from '../constants/levels/level-7.json';
 import signRegistry from '../../../shared/signs.json';
 
-export const LEVELS = [level1, level2, level3, level4, level5, level6, level7];
+const RAW_LEVELS_BY_ID = { 1: level1, 2: level2, 3: level3, 4: level4, 5: level5, 6: level6, 7: level7 };
+
+// levels.json is the source of truth for name/image/available — it can be edited
+// without touching each level's move/opponent data in level-N.json.
+export const LEVELS = levelsIndex.levels.map((entry) => {
+  const raw = RAW_LEVELS_BY_ID[entry.id];
+  return {
+    ...raw,
+    name: entry.name,
+    available: entry.available,
+    opponentPokemon: { ...raw.opponentPokemon, image: entry.image || raw.opponentPokemon.image },
+  };
+});
 
 export const SIGNS_BY_ID = Object.fromEntries(
   signRegistry.signs.map((sign) => [sign.id, sign])
@@ -23,6 +36,18 @@ const PALETTES = [
   ['#3fa9a0', '#287a74'],
 ];
 
+const POKEMON_PALETTES = {
+  magikarp: ['#e58a86', '#b85652'],
+  psyduck: ['#e8c14a', '#b8941f'],
+  "farfetch'd": ['#c9a33b', '#9a7a1e'],
+  onix: ['#8a97a1', '#5f6b74'],
+  venusaur: ['#6fae4a', '#4c8330'],
+  gyarados: ['#3f8fd0', '#2a6aa3'],
+  charizard: ['#e4643a', '#b8451f'],
+  snorlax: ['#3fa9a0', '#287a74'],
+  mewtwo: ['#9b7fc9', '#6a4fa3'],
+};
+
 const BLURBS = {
   1: 'Two signs, fifty damage each. The opening bout — learn the greeting and the yes.',
   2: 'Three signs of basic courtesy. The counterattack arrives on every second success.',
@@ -37,6 +62,22 @@ export function palette(levelId) {
   return PALETTES[levelId - 1] || PALETTES[0];
 }
 
+export function pokemonPalette(level) {
+  const key = level.opponentPokemon.species.toLowerCase();
+  return POKEMON_PALETTES[key] || palette(level.id);
+}
+
+const SMALL_SPRITE_SCALE = {
+  magikarp: 0.55,
+  psyduck: 0.55,
+  venusaur: 0.8,
+};
+
+export function spriteScale(level) {
+  const key = level.opponentPokemon.species.toLowerCase();
+  return SMALL_SPRITE_SCALE[key] || 1;
+}
+
 export function blurb(levelId) {
   return BLURBS[levelId] || '';
 }
@@ -45,8 +86,36 @@ export function levelById(id) {
   return LEVELS.find((lvl) => lvl.id === id);
 }
 
+export const UNLOCK_KEY = 'pookie.unlocked';
+
+export function readUnlocked() {
+  try {
+    return Math.max(1, Math.min(7, parseInt(localStorage.getItem(UNLOCK_KEY), 10) || 1));
+  } catch (e) {
+    return 1;
+  }
+}
+
+export function writeUnlocked(id) {
+  try {
+    localStorage.setItem(UNLOCK_KEY, String(id));
+  } catch (e) {
+    /* localStorage unavailable (private mode, etc.) — unlock stays session-only */
+  }
+}
+
+// A level is playable if the design has it flagged available, or the player
+// has cleared their way up to it (progress persisted via readUnlocked/writeUnlocked).
+export function isLevelAvailable(level, unlocked) {
+  return level.available || level.id <= unlocked;
+}
+
 export function opponentName(level) {
   return level.opponentPokemon.species.toUpperCase();
+}
+
+export function opponentImage(level) {
+  return level.opponentPokemon.image;
 }
 
 export function moveList(level) {
@@ -78,20 +147,3 @@ export function hpColor(pct) {
   return '#e35d4f';
 }
 
-export const UNLOCK_KEY = 'pookie.unlocked';
-
-export function readUnlocked() {
-  try {
-    return Math.max(4, Math.min(7, parseInt(localStorage.getItem(UNLOCK_KEY), 10) || 4));
-  } catch (e) {
-    return 4;
-  }
-}
-
-export function writeUnlocked(id) {
-  try {
-    localStorage.setItem(UNLOCK_KEY, String(id));
-  } catch (e) {
-    /* localStorage unavailable (private mode, etc.) — unlock stays session-only */
-  }
-}

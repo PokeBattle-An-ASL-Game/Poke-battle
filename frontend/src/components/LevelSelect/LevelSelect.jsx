@@ -1,7 +1,7 @@
-import { LEVELS, palette } from '../../game/levels.js';
+import { LEVELS, isLevelAvailable, palette, spriteScale } from '../../game/levels.js';
 import LevelTile from './LevelTile.jsx';
 
-export default function LevelSelect({ unlocked, intro, onOpenPreview }) {
+export default function LevelSelect({ intro, unlocked, onOpenPreview }) {
   return (
     <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', background: '#35b6f2' }}>
       <div style={{ position: 'absolute', top: 126, left: 0, width: '200%', height: 70, animation: 'sb-drift 90s steps(90) infinite', pointerEvents: 'none' }}>
@@ -21,9 +21,9 @@ export default function LevelSelect({ unlocked, intro, onOpenPreview }) {
 
       {!intro && (
         <div style={{ position: 'absolute', left: 0, right: 0, top: 214, bottom: 92, overflow: 'visible', padding: '0 20px', zIndex: 2 }}>
-          <div style={{ position: 'relative', height: '100%', animation: 'sb-rise .5s ease-out both', display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gridTemplateRows: 'repeat(2,minmax(0,1fr))', justifyItems: 'center', gap: '10px 20px' }}>
+          <div style={{ position: 'relative', height: '100%', animation: 'sb-rise .5s ease-out both', display: 'grid', gridTemplateColumns: 'repeat(5,minmax(0,1fr))', gridTemplateRows: 'repeat(2,minmax(0,1fr))', justifyItems: 'center', gap: '10px 20px' }}>
             {LEVELS.map((lvl) => (
-              <LevelTile key={lvl.id} level={lvl} locked={lvl.id > unlocked} palette={palette(lvl.id)} onOpen={onOpenPreview} />
+              <LevelTile key={lvl.id} level={lvl} locked={!isLevelAvailable(lvl, unlocked)} palette={palette(lvl.id)} scale={spriteScale(lvl)} onOpen={onOpenPreview} />
             ))}
             <div style={{ width: '100%', height: '100%', minHeight: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', gap: 8, opacity: .8 }}>
               <div style={{ position: 'relative', flex: 1, minHeight: 0, aspectRatio: '1/1', maxWidth: 104, maxHeight: 104, alignSelf: 'center', border: '3px dashed rgba(255,255,255,.65)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Silkscreen',monospace", fontSize: 34, color: 'rgba(255,255,255,.8)' }}>?</div>

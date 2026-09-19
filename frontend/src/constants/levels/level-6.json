@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": 6,
   "name": "Level 6",
-  "available": false,
+  "available": true,
   "status": "planned-awaiting-ml-and-teaching-review",
   "playerPokemon": {
     "species": "Trainer",
@@ -10,8 +10,8 @@
     "maxHP": 100
   },
   "opponentPokemon": {
-    "species": "Opponent 6 (placeholder)",
-    "image": null,
+    "species": "Snorlax",
+    "image": "/assets/pokemon/snorlax.gif",
     "maxHP": 100,
     "attacks": [
       {

@@ -1,10 +1,10 @@
-export default function EndScreen({ phase, level, levelId, moveCount, onNext, onRestart, onGoSelect }) {
+export default function EndScreen({ phase, level, levelId, moveCount, nextAvailable, onNext, onRestart, onGoSelect }) {
   const isVictory = phase === 'VICTORY';
   const endTitle = isVictory ? 'VICTORY' : 'DEFEAT';
   const endColor = isVictory ? '#63c98a' : '#e35d4f';
-  const hasNext = isVictory && levelId + 1 <= 7;
+  const hasNext = isVictory && nextAvailable;
   const endNote = isVictory
-    ? `${level.opp} was defeated! All ${moveCount} signs landed. ${levelId + 1 <= 7 ? 'Level ' + (levelId + 1) + ' is now open.' : 'That is the last level for now.'}`
+    ? `${level.opp} was defeated! All ${moveCount} signs landed. ${nextAvailable ? 'Level ' + (levelId + 1) + ' is now open.' : 'That is the last level for now.'}`
     : 'HP reached 0. PP and slots reset on restart; completion history and per-sign attempt counts are kept.';
 
   return (

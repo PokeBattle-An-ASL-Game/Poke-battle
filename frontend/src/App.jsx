@@ -2,11 +2,15 @@ import { useCallback, useEffect, useState } from 'react';
 import LevelSelect from './components/LevelSelect/LevelSelect.jsx';
 import LevelPreviewModal from './components/LevelPreviewModal.jsx';
 import BattleScreen from './components/Battle/BattleScreen.jsx';
-import { readUnlocked, writeUnlocked } from './game/levels.js';
+import { isLevelAvailable, levelById, readUnlocked, writeUnlocked } from './game/levels.js';
 
 function routeFromHash() {
   const m = /^#battle-(\d+)$/.exec(location.hash || '');
-  return m ? { screen: 'BATTLE', levelId: +m[1] } : { screen: 'SELECT', levelId: null };
+  const levelId = m ? +m[1] : null;
+  const level = levelId ? levelById(levelId) : null;
+  return level && isLevelAvailable(level, readUnlocked())
+    ? { screen: 'BATTLE', levelId }
+    : { screen: 'SELECT', levelId: null };
 }
 
 export default function App() {
@@ -62,7 +66,7 @@ export default function App() {
       )}
 
       {isSelect && (
-        <LevelSelect unlocked={unlocked} intro={intro} onOpenPreview={setPreviewId} />
+        <LevelSelect intro={intro} unlocked={unlocked} onOpenPreview={setPreviewId} />
       )}
 
       {previewId && isSelect && (

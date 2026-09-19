@@ -2,15 +2,15 @@
   "schemaVersion": 1,
   "id": 4,
   "name": "Level 4",
-  "available": false,
+  "available": true,
   "playerPokemon": {
     "species": "Trainer",
     "image": null,
     "maxHP": 100
   },
   "opponentPokemon": {
-    "species": "Goldeen",
-    "image": "/assets/pokemon/goldeen.png",
+    "species": "Charizard",
+    "image": "/assets/pokemon/charizard.gif",
     "maxHP": 100,
     "attacks": [
       {
