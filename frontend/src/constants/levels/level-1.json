@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "id": 1,
+  "name": "Level 1",
+  "available": false,
+  "playerPokemon": {
+    "species": "Trainer",
+    "image": null,
+    "maxHP": 100
+  },
+  "opponentPokemon": {
+    "species": "Bulbasaur",
+    "image": "/assets/pokemon/bulbasaur.png",
+    "maxHP": 100,
+    "attacks": [
+      {
+        "id": "1",
+        "name": "Vine Whip",
+        "damage": 10
+      },
+      {
+        "id": "2",
+        "name": "Leech Seed",
+        "damage": 10
+      },
+      {
+        "id": "3",
+        "name": "Razor Leaf",
+        "damage": 10
+      },
+      {
+        "id": "4",
+        "name": "Tackle",
+        "damage": 10
+      }
+    ]
+  },
+  "moves": [
+    {
+      "id": "move-1",
+      "signId": "HELLO",
+      "difficulty": "easy",
+      "damage": 50,
+      "maxPP": 1
+    },
+    {
+      "id": "move-2",
+      "signId": "YES",
+      "difficulty": "medium",
+      "damage": 50,
+      "maxPP": 1
+    }
+  ],
+  "status": "planned-awaiting-ml-and-teaching-review"
+}

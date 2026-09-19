@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "id": 5,
+  "name": "Level 5",
+  "available": false,
+  "status": "planned-awaiting-ml-and-teaching-review",
+  "playerPokemon": {
+    "species": "Trainer",
+    "image": null,
+    "maxHP": 100
+  },
+  "opponentPokemon": {
+    "species": "Opponent 5 (placeholder)",
+    "image": null,
+    "maxHP": 100,
+    "attacks": [
+      {
+        "id": "attack-1",
+        "name": "Counter 1 (placeholder)",
+        "damage": 10
+      },
+      {
+        "id": "attack-2",
+        "name": "Counter 2 (placeholder)",
+        "damage": 10
+      },
+      {
+        "id": "attack-3",
+        "name": "Counter 3 (placeholder)",
+        "damage": 10
+      },
+      {
+        "id": "attack-4",
+        "name": "Counter 4 (placeholder)",
+        "damage": 10
+      }
+    ]
+  },
+  "moves": [
+    {
+      "id": "move-1",
+      "signId": "FINISH",
+      "difficulty": "easy",
+      "damage": 10,
+      "maxPP": 1
+    },
+    {
+      "id": "move-2",
+      "signId": "BOOK",
+      "difficulty": "easy",
+      "damage": 15,
+      "maxPP": 1
+    },
+    {
+      "id": "move-3",
+      "signId": "LEARN",
+      "difficulty": "medium",
+      "damage": 20,
+      "maxPP": 1
+    },
+    {
+      "id": "move-4",
+      "signId": "SCHOOL",
+      "difficulty": "medium",
+      "damage": 25,
+      "maxPP": 1
+    },
+    {
+      "id": "move-5",
+      "signId": "FRIEND",
+      "difficulty": "hard",
+      "damage": 30,
+      "maxPP": 1
+    }
+  ]
+}

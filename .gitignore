@@ -1,0 +1,68 @@
+# Keep licensed/identifiable videos and derived features off public Git
+backend/data/
+backend/datasets/
+backend/app/ml/artifacts/
+backend/reports/private/
+*.mp4
+*.webm
+*.mov
+*.npy
+*.npz
+*.pt
+*.pth
+*.pkl
+*.joblib
+*.h5
+*.keras
+*.onnx
+*.tflite
+*.ckpt
+*.safetensors
+*.zip
+*.tar.gz
+data/
+datasets/
+.env
+.env.*
+!.env.example
+# Credentials / keys
+*.pem
+*.key
+*.p12
+credentials*.json
+service-account*.json
+secrets/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage/
+.venv/
+venv/
+env/
+node_modules/
+frontend/dist/
+dist/
+build/
+*.tsbuildinfo
+.eslintcache
+*.log
+npm-debug.log*
+.DS_Store
+# Local editor / workspace configuration
+*.code-workspace
+.vscode/
+.idea/
+# Reviewed, explicitly licensed tutorial clips may be tracked intentionally
+!frontend/public/assets/asl/*.mp4
+!frontend/public/assets/asl/*.webm
+
+# Supplied opponent PNGs are NOT approved for a public repository yet.
+frontend/public/assets/pokemon/*.png
+# Static generated narration requires verified provider/voice redistribution rights.
+frontend/public/assets/audio/*.mp3
+frontend/public/assets/audio/*.wav
+frontend/public/assets/audio/*.ogg

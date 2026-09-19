@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "id": 3,
+  "name": "Level 3",
+  "available": false,
+  "playerPokemon": {
+    "species": "Trainer",
+    "image": null,
+    "maxHP": 100
+  },
+  "opponentPokemon": {
+    "species": "Onix",
+    "image": "/assets/pokemon/onix.png",
+    "maxHP": 100,
+    "attacks": [
+      {
+        "id": "1",
+        "name": "Rock Throw",
+        "damage": 10
+      },
+      {
+        "id": "2",
+        "name": "Bind",
+        "damage": 10
+      },
+      {
+        "id": "3",
+        "name": "Tackle",
+        "damage": 10
+      },
+      {
+        "id": "4",
+        "name": "Rock Slide",
+        "damage": 10
+      }
+    ]
+  },
+  "moves": [
+    {
+      "id": "move-1",
+      "signId": "HELP",
+      "difficulty": "easy",
+      "damage": 15,
+      "maxPP": 1
+    },
+    {
+      "id": "move-2",
+      "signId": "SORRY",
+      "difficulty": "medium",
+      "damage": 20,
+      "maxPP": 1
+    },
+    {
+      "id": "move-3",
+      "signId": "STOP",
+      "difficulty": "medium",
+      "damage": 25,
+      "maxPP": 1
+    },
+    {
+      "id": "move-4",
+      "signId": "GO",
+      "difficulty": "hard",
+      "damage": 40,
+      "maxPP": 1
+    }
+  ],
+  "status": "planned-awaiting-ml-and-teaching-review"
+}

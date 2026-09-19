@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "levels": [
+    {
+      "id": 1,
+      "name": "Level 1",
+      "dataUrl": "/src/constants/levels/level-1.json",
+      "available": false
+    },
+    {
+      "id": 2,
+      "name": "Level 2",
+      "dataUrl": "/src/constants/levels/level-2.json",
+      "available": false
+    },
+    {
+      "id": 3,
+      "name": "Level 3",
+      "dataUrl": "/src/constants/levels/level-3.json",
+      "available": false
+    },
+    {
+      "id": 4,
+      "name": "Level 4",
+      "dataUrl": "/src/constants/levels/level-4.json",
+      "available": false
+    },
+    {
+      "id": 5,
+      "name": "Level 5",
+      "dataUrl": "/src/constants/levels/level-5.json",
+      "available": false
+    },
+    {
+      "id": 6,
+      "name": "Level 6",
+      "dataUrl": "/src/constants/levels/level-6.json",
+      "available": false
+    },
+    {
+      "id": 7,
+      "name": "Level 7",
+      "dataUrl": "/src/constants/levels/level-7.json",
+      "available": false
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": 2,
+  "name": "Level 2",
+  "available": false,
+  "playerPokemon": {
+    "species": "Trainer",
+    "image": null,
+    "maxHP": 100
+  },
+  "opponentPokemon": {
+    "species": "Squirtle",
+    "image": "/assets/pokemon/squirtle.png",
+    "maxHP": 100,
+    "attacks": [
+      {
+        "id": "1",
+        "name": "Water Gun",
+        "damage": 10
+      },
+      {
+        "id": "2",
+        "name": "Bubble",
+        "damage": 10
+      },
+      {
+        "id": "3",
+        "name": "Rapid Spin",
+        "damage": 10
+      },
+      {
+        "id": "4",
+        "name": "Tackle",
+        "damage": 10
+      }
+    ]
+  },
+  "moves": [
+    {
+      "id": "move-1",
+      "signId": "THANK_YOU",
+      "difficulty": "easy",
+      "damage": 25,
+      "maxPP": 1
+    },
+    {
+      "id": "move-2",
+      "signId": "PLEASE",
+      "difficulty": "medium",
+      "damage": 35,
+      "maxPP": 1
+    },
+    {
+      "id": "move-3",
+      "signId": "NO",
+      "difficulty": "hard",
+      "damage": 40,
+      "maxPP": 1
+    }
+  ],
+  "status": "planned-awaiting-ml-and-teaching-review"
+}

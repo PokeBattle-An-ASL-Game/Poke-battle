@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "status": "draft-not-generated",
+  "language": "en-US",
+  "lines": [
+    {"id": "choose_hello", "text": "Choose hello!", "event": "attack_selected", "signId": "HELLO"},
+    {"id": "choose_thank_you", "text": "Choose thank you!", "event": "attack_selected", "signId": "THANK_YOU"},
+    {"id": "choose_please", "text": "Choose please!", "event": "attack_selected", "signId": "PLEASE"},
+    {"id": "choose_yes", "text": "Choose yes!", "event": "attack_selected", "signId": "YES"},
+    {"id": "hit", "text": "Attack landed!", "event": "correct", "signId": null},
+    {"id": "miss", "text": "Attack missed!", "event": "incorrect", "signId": null},
+    {"id": "victory", "text": "Victory!", "event": "victory", "signId": null}
+  ]
+}
