@@ -8,6 +8,7 @@ import numpy as np
 
 EXTRACTOR_VERSION = "pookie-landmarks-v0-draft"
 FRAME_COUNT = 25
+LANDMARK_MODEL_SHA256 = "e2dab61191e2dcd0a15f943d8e3ed1dce13c82dfa597b9dd39f562975a50c3f8"
 
 # MediaPipe pose indices: nose, eyes, mouth corners, shoulders, elbows, wrists.
 POSE_POINTS = (0, 2, 5, 9, 10, 11, 12, 13, 14, 15, 16)
@@ -55,6 +56,7 @@ class FeatureSequence:
 def extractor_fingerprint() -> str:
     layout = {
         "version": EXTRACTOR_VERSION,
+        "landmark_model": LANDMARK_MODEL_SHA256,
         "frames": FRAME_COUNT,
         "pose": POSE_POINTS,
         "hand": HAND_POINTS,
