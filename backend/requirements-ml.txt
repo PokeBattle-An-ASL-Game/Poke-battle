@@ -2,3 +2,5 @@
 -r requirements.txt
 mediapipe==0.10.21
 opencv-contrib-python==4.11.0.86
+# WLASL I3D runtime (non-commercial model licence, see README).
+torch==2.14.0
