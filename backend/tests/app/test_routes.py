@@ -1,6 +1,38 @@
+import json
+from dataclasses import replace
+
 import pytest
 
+from app.config import REPO_ROOT
 from app.ml.recognizer import Prediction
+
+EXAMPLES = json.loads((REPO_ROOT / "shared/api-examples/responses.json").read_text())
+EXAMPLE_ID = "583fe810-53c8-42ab-9c70-64f7264c8255"
+EXAMPLE_SCENARIOS = {
+    "correct": ({}, Prediction("HELLO", 0.91, None, "isolated-words-v1"), {}),
+    "incorrect": ({}, Prediction("YES", 0.88, None, "isolated-words-v1"), {}),
+    "retry": ({}, Prediction(None, None, "hands_not_visible", "isolated-words-v1"), {}),
+    "BAD_REQUEST": ({"levelId": "abc"}, None, {}),
+    "NOT_FOUND": ({"levelId": "9"}, None, {}),
+    "UPLOAD_TOO_LARGE": ({}, None, {"MAX_CONTENT_LENGTH": 10_000}),
+    "LEVEL_UNAVAILABLE": ({"levelId": "2"}, None, {}),
+    "SIGN_UNAVAILABLE": ({"levelId": "3", "moveId": "move-1"}, None, {}),
+    "MODEL_NOT_READY": ({}, None, {"manifest": None}),
+    "INFERENCE_UNAVAILABLE": ({}, RuntimeError("boom"), {}),
+}
+
+
+@pytest.mark.parametrize("name", sorted(EXAMPLES))
+def test_shared_examples_match_real_responses(name, make_client, post_attempt, fake_recognizer, fake_manifest):
+    fields, outcome, options = EXAMPLE_SCENARIOS[name]
+    options = dict(options)
+    manifest = options.pop("manifest", replace(fake_manifest, model_version="isolated-words-v1"))
+    recognizer = None
+    if manifest is not None:
+        recognizer = fake_recognizer(error=outcome) if isinstance(outcome, Exception) else fake_recognizer(outcome)
+    response = post_attempt(make_client(recognizer, manifest, **options), requestId=EXAMPLE_ID, **fields)
+    assert response.status_code == EXAMPLES[name]["httpStatus"]
+    assert response.get_json() == EXAMPLES[name]["body"]
 
 
 def error_code(response):

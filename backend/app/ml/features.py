@@ -142,6 +142,27 @@ def features_from_landmarks(
     return FeatureSequence(features, mask, stamps - stamps[0], EXTRACTOR_VERSION, reason)
 
 
+POSE_MIRROR = {2: 5, 5: 2, 9: 10, 10: 9, 11: 12, 12: 11, 13: 14, 14: 13, 15: 16, 16: 15}
+
+
+def mirror_sequence(sequence: FeatureSequence) -> FeatureSequence:
+    """Left-right mirror of a sequence, e.g. to augment training with left-handed signing."""
+    frames = sequence.features.reshape(sequence.features.shape[0], -1, 2)
+    pose_count = len(POSE_POINTS)
+    pose_order = [POSE_POINTS.index(POSE_MIRROR.get(point, point)) for point in POSE_POINTS]
+    left = frames[:, pose_count : pose_count + HAND_POINTS]
+    right = frames[:, pose_count + HAND_POINTS :]
+    mirrored = np.concatenate([frames[:, pose_order], right, left], axis=1)
+    mirrored[..., 0] *= -1
+    return FeatureSequence(
+        mirrored.reshape(sequence.features.shape).astype(np.float32),
+        sequence.mask[:, [0, 2, 1]].copy(),
+        sequence.timestamps_ms.copy(),
+        sequence.extractor_version,
+        sequence.reason,
+    )
+
+
 def extract_features(
     frames_rgb: Sequence[np.ndarray], timestamps_ms: Sequence[float], detector: LandmarkDetector
 ) -> FeatureSequence:

@@ -113,6 +113,41 @@ def test_sample_frame_indices():
         f.sample_frame_indices(frame_count=24, fps=30)
 
 
+def asymmetric_person():
+    rng = np.random.default_rng(0)
+    body = pose() + rng.normal(0, 0.01, (33, 2))
+    return f.FrameLandmarks(pose=body, left_hand=hand(0.72, 0.35) + rng.normal(0, 0.01, (21, 2)), right_hand=None)
+
+
+def mirror_image(frame):
+    flip = np.array([-1.0, 1.0])
+    body = frame.pose * flip + [1.0, 0.0]
+    for a, b in f.POSE_MIRROR.items():
+        if a < b:
+            body[[a, b]] = body[[b, a]]
+    flipped = [None if h is None else h * flip + [1.0, 0.0] for h in (frame.left_hand, frame.right_hand)]
+    return f.FrameLandmarks(pose=body, left_hand=flipped[1], right_hand=flipped[0])
+
+
+def test_mirror_matches_a_physically_mirrored_person():
+    person = [asymmetric_person()] * 25
+    original = f.features_from_landmarks(person, STAMPS, (480, 480))
+    mirrored_person = f.features_from_landmarks([mirror_image(p) for p in person], STAMPS, (480, 480))
+    mirrored = f.mirror_sequence(original)
+    np.testing.assert_allclose(mirrored.features, mirrored_person.features, atol=1e-5)
+    np.testing.assert_array_equal(mirrored.mask, mirrored_person.mask)
+
+
+def test_mirror_twice_is_identity_and_keeps_metadata():
+    original = f.features_from_landmarks([asymmetric_person()] * 25, STAMPS, SIZE)
+    twice = f.mirror_sequence(f.mirror_sequence(original))
+    np.testing.assert_allclose(twice.features, original.features)
+    np.testing.assert_array_equal(twice.mask, original.mask)
+    once = f.mirror_sequence(original)
+    assert once.mask[:, 2].all() and not once.mask[:, 1].any()
+    assert once.features.dtype == np.float32 and once.extractor_version == original.extractor_version
+
+
 def test_fingerprint_is_stable():
     assert f.extractor_fingerprint() == f.extractor_fingerprint()
     assert len(f.extractor_fingerprint()) == 64

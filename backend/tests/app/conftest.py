@@ -33,6 +33,11 @@ def fake_recognizer():
 
 
 @pytest.fixture
+def fake_manifest():
+    return FAKE_MANIFEST
+
+
+@pytest.fixture
 def game_files(tmp_path):
     levels = tmp_path / "levels"
     levels.mkdir()
