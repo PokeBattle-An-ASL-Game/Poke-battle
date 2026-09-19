@@ -9,4 +9,4 @@ export const CAPTURE_WIDTH = 640;
 export const CAPTURE_HEIGHT = 480;
 export const JPEG_QUALITY = 0.75;
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
