@@ -44,7 +44,16 @@ To check that the level JSON files parse:
 python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('frontend/src/constants/**/*.json', recursive=True) + glob.glob('shared/*.json')]; print('OK')"
 ```
 
-Frontend setup steps will be added once that code is in place.
+### Frontend (React + Vite)
+
+```bash
+cd frontend
+npm install
+npm run dev      # serves http://localhost:5173
+npm run build    # production build into frontend/dist
+```
+
+The battle screen's sign-capture step is a self-contained simulation (25 fake recorded frames, then a manual correct/incorrect/retry pick) — it does not call `POST /api/validate-sign` yet.
 
 ### Backend (Flask API + shared feature extractor)
 
