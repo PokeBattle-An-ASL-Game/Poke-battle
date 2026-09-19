@@ -13,6 +13,7 @@ const IDLE_ANIM = 'sb-idle 3.4s ease-in-out infinite';
 function initialState(levelId, unlocked) {
   return {
     levelId,
+    unlocked,
     phase: 'INTRO',
     playerHP: 100,
     opponentHP: 100,
@@ -41,7 +42,6 @@ function initialState(levelId, unlocked) {
     entering: 'ball',
     oppEnter: 'ball',
     hintOpen: false,
-    unlocked,
   };
 }
 

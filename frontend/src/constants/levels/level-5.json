@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": 5,
   "name": "Level 5",
-  "available": false,
+  "available": true,
   "status": "planned-awaiting-ml-and-teaching-review",
   "playerPokemon": {
     "species": "Trainer",
@@ -10,8 +10,8 @@
     "maxHP": 100
   },
   "opponentPokemon": {
-    "species": "Opponent 5 (placeholder)",
-    "image": null,
+    "species": "Gyarados",
+    "image": "/assets/pokemon/gyarados.gif",
     "maxHP": 100,
     "attacks": [
       {

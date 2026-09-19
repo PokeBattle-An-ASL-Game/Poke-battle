@@ -2,15 +2,15 @@
   "schemaVersion": 1,
   "id": 2,
   "name": "Level 2",
-  "available": false,
+  "available": true,
   "playerPokemon": {
     "species": "Trainer",
     "image": null,
     "maxHP": 100
   },
   "opponentPokemon": {
-    "species": "Squirtle",
-    "image": "/assets/pokemon/squirtle.png",
+    "species": "Psyduck",
+    "image": "/assets/pokemon/psyduck.gif",
     "maxHP": 100,
     "attacks": [
       {

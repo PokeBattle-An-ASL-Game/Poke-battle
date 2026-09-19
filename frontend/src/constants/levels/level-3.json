@@ -2,15 +2,15 @@
   "schemaVersion": 1,
   "id": 3,
   "name": "Level 3",
-  "available": false,
+  "available": true,
   "playerPokemon": {
     "species": "Trainer",
     "image": null,
     "maxHP": 100
   },
   "opponentPokemon": {
-    "species": "Onix",
-    "image": "/assets/pokemon/onix.png",
+    "species": "Venusaur",
+    "image": "/assets/pokemon/venusaur.gif",
     "maxHP": 100,
     "attacks": [
       {

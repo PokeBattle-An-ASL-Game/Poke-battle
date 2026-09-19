@@ -1,4 +1,4 @@
-import { opponentName, palette } from '../../game/levels.js';
+import { LEVELS, isLevelAvailable, opponentImage, opponentName, palette, spriteScale } from '../../game/levels.js';
 import { useBattle } from '../../game/useBattle.js';
 import { EntranceEffects, OpponentSprite, PlayerSprite } from './Sprites.jsx';
 import { OpponentHPBar, PlayerHPBar } from './HPBars.jsx';
@@ -19,9 +19,13 @@ export default function BattleScreen({ levelId, unlocked, onUnlock, onNextLevel,
   const showCommand = state.phase === 'CHOOSE_MOVE' && state.menuOpen !== false;
   const showGrid = state.phase === 'CHOOSE_MOVE' && state.menuOpen === false;
   const oppLabel = opponentName(level);
+  const oppImage = opponentImage(level);
+  const oppScale = spriteScale(level);
   const oppOpacity = (state.phase === 'VICTORY' || state.oppEnter === 'ball' || state.oppEnter === 'burst') ? 0 : 1;
   const plyOpacity = (state.phase === 'DEFEAT' || state.entering === 'ball' || state.entering === 'burst') ? 0 : 1;
   const selected = state.selected ? byId[state.selected] : null;
+  const nextLevel = LEVELS.find((lvl) => lvl.id === levelId + 1);
+  const nextAvailable = Boolean(nextLevel && isLevelAvailable(nextLevel, state.unlocked));
 
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
@@ -32,7 +36,7 @@ export default function BattleScreen({ levelId, unlocked, onUnlock, onNextLevel,
         <div style={{ position: 'absolute', right: '6%', top: '37%', width: '26%', height: '8%', borderRadius: '50%', background: '#b98a52', boxShadow: 'inset 0 -5px 0 rgba(0,0,0,.14),0 4px 0 rgba(0,0,0,.1)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', right: '9%', top: '38.2%', width: '20%', height: '4.6%', borderRadius: '50%', background: '#cfa06a', pointerEvents: 'none' }} />
 
-        <OpponentSprite label={oppLabel} anim={state.oppAnim} opacity={oppOpacity} />
+        <OpponentSprite label={oppLabel} image={oppImage} scale={oppScale} anim={state.oppAnim} opacity={oppOpacity} />
         <EntranceEffects oppEnter={state.oppEnter} entering={state.entering} />
         <PlayerSprite anim={state.plyAnim} opacity={plyOpacity} />
 
@@ -76,6 +80,7 @@ export default function BattleScreen({ levelId, unlocked, onUnlock, onNextLevel,
             level={{ opp: oppLabel }}
             levelId={levelId}
             moveCount={moves.length}
+            nextAvailable={nextAvailable}
             onNext={() => onNextLevel(levelId + 1)}
             onRestart={battle.restart}
             onGoSelect={onGoSelect}

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": 7,
   "name": "Level 7",
-  "available": false,
+  "available": true,
   "status": "planned-awaiting-ml-and-teaching-review",
   "playerPokemon": {
     "species": "Trainer",
@@ -10,8 +10,8 @@
     "maxHP": 100
   },
   "opponentPokemon": {
-    "species": "Opponent 7 (placeholder)",
-    "image": null,
+    "species": "Mewtwo",
+    "image": "/assets/pokemon/mewtwo.gif",
     "maxHP": 100,
     "attacks": [
       {

@@ -2,15 +2,15 @@
   "schemaVersion": 1,
   "id": 1,
   "name": "Level 1",
-  "available": false,
+  "available": true,
   "playerPokemon": {
     "species": "Trainer",
     "image": null,
     "maxHP": 100
   },
   "opponentPokemon": {
-    "species": "Bulbasaur",
-    "image": "/assets/pokemon/bulbasaur.png",
+    "species": "Magikarp",
+    "image": "/assets/pokemon/magikarp.gif",
     "maxHP": 100,
     "attacks": [
       {

@@ -1,10 +1,12 @@
-import { blurb, counterEvery, levelById, moveList, opponentName, palette } from '../game/levels.js';
+import { blurb, counterEvery, levelById, moveList, opponentImage, opponentName, pokemonPalette, spriteScale } from '../game/levels.js';
 
 const TINT = { easy: '#cfe9d6', medium: '#f6e4bb', hard: '#f5d2cd' };
 
 export default function LevelPreviewModal({ levelId, onClose, onStart }) {
   const level = levelById(levelId);
-  const [color, shade] = palette(levelId);
+  const [color, shade] = pokemonPalette(level);
+  const image = opponentImage(level);
+  const scale = spriteScale(level);
   const moves = moveList(level);
   const stats = [
     { k: 'SIGNS', v: String(moves.length) },
@@ -18,10 +20,16 @@ export default function LevelPreviewModal({ levelId, onClose, onStart }) {
       <div onClick={(e) => e.stopPropagation()} style={{ width: 'min(430px,94%)', maxHeight: '100%', background: '#f4ead6', border: '3px solid #2b3a3f', boxShadow: '7px 7px 0 rgba(20,32,36,.5)', display: 'flex', flexDirection: 'column', animation: 'sb-rise .22s ease-out', cursor: 'default' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', background: color, borderBottom: '3px solid #2b3a3f' }}>
           <div style={{ position: 'relative', width: 54, height: 54, flex: 'none' }}>
-            <div style={{ position: 'absolute', left: '14%', top: '6%', width: '20%', height: '26%', background: shade }} />
-            <div style={{ position: 'absolute', right: '14%', top: '6%', width: '20%', height: '26%', background: shade }} />
-            <div style={{ position: 'absolute', left: '8%', bottom: '4%', width: '84%', height: '74%', borderRadius: '46%', background: shade }} />
-            <div style={{ position: 'absolute', left: 0, right: 0, bottom: '22%', textAlign: 'center', fontFamily: "'Silkscreen',monospace", fontSize: 17, color: 'rgba(255,255,255,.9)' }}>?</div>
+            {image ? (
+              <img src={image} alt={opponentName(level)} style={{ width: `${scale * 100}%`, height: `${scale * 100}%`, margin: 'auto', display: 'block', position: 'absolute', inset: 0, objectFit: 'contain', imageRendering: 'pixelated' }} />
+            ) : (
+              <>
+                <div style={{ position: 'absolute', left: '14%', top: '6%', width: '20%', height: '26%', background: shade }} />
+                <div style={{ position: 'absolute', right: '14%', top: '6%', width: '20%', height: '26%', background: shade }} />
+                <div style={{ position: 'absolute', left: '8%', bottom: '4%', width: '84%', height: '74%', borderRadius: '46%', background: shade }} />
+                <div style={{ position: 'absolute', left: 0, right: 0, bottom: '22%', textAlign: 'center', fontFamily: "'Silkscreen',monospace", fontSize: 17, color: 'rgba(255,255,255,.9)' }}>?</div>
+              </>
+            )}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
             <div style={{ fontFamily: "'Silkscreen',monospace", fontSize: 18, color: '#fff', textShadow: '0 2px 0 rgba(0,0,0,.28)' }}>{level.name.toUpperCase()}</div>

@@ -5,42 +5,49 @@
       "id": 1,
       "name": "Level 1",
       "dataUrl": "/src/constants/levels/level-1.json",
-      "available": false
+      "image": "/assets/pokemon/magikarp.gif",
+      "available": true
     },
     {
       "id": 2,
       "name": "Level 2",
       "dataUrl": "/src/constants/levels/level-2.json",
-      "available": false
+      "image": "/assets/pokemon/psyduck.gif",
+      "available": true
     },
     {
       "id": 3,
       "name": "Level 3",
       "dataUrl": "/src/constants/levels/level-3.json",
-      "available": false
+      "image": "/assets/pokemon/venusaur.gif",
+      "available": true
     },
     {
       "id": 4,
       "name": "Level 4",
       "dataUrl": "/src/constants/levels/level-4.json",
-      "available": false
+      "image": "/assets/pokemon/charizard.gif",
+      "available": true
     },
     {
       "id": 5,
       "name": "Level 5",
       "dataUrl": "/src/constants/levels/level-5.json",
+      "image": "/assets/pokemon/gyarados.gif",
       "available": false
     },
     {
       "id": 6,
       "name": "Level 6",
       "dataUrl": "/src/constants/levels/level-6.json",
+      "image": "/assets/pokemon/snorlax.gif",
       "available": false
     },
     {
       "id": 7,
       "name": "Level 7",
       "dataUrl": "/src/constants/levels/level-7.json",
+      "image": "/assets/pokemon/mewtwo.gif",
       "available": false
     }
   ]

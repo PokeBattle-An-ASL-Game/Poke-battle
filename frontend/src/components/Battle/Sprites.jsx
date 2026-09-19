@@ -1,19 +1,21 @@
-export function OpponentSprite({ label, anim, opacity }) {
+export function OpponentSprite({ label, image, scale = 1, anim, opacity }) {
   return (
-    <div style={{ position: 'absolute', right: '9%', top: '8%', width: '19%', animation: anim }}>
-      <div style={{ aspectRatio: '1/1', background: 'repeating-linear-gradient(135deg,#9fb6c4 0 9px,#8aa4b4 9px 18px)', border: '2px solid #4c6472', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', flexDirection: 'column', fontSize: '2.1cqw', color: '#26343d', padding: '4%', opacity }}>
-        {label}<br /><span style={{ fontSize: '1.5cqw', color: '#3c5260' }}>art placeholder</span>
-      </div>
+    <div style={{ position: 'absolute', right: '9%', top: '8%', width: '19%', aspectRatio: '1/1', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', animation: anim }}>
+      {image ? (
+        <img src={image} alt={label} style={{ width: `${scale * 100}%`, objectFit: 'contain', opacity, imageRendering: 'pixelated', display: 'block' }} />
+      ) : (
+        <div style={{ width: '100%', aspectRatio: '1/1', background: 'repeating-linear-gradient(135deg,#9fb6c4 0 9px,#8aa4b4 9px 18px)', border: '2px solid #4c6472', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', flexDirection: 'column', fontSize: '2.1cqw', color: '#26343d', padding: '4%', opacity }}>
+          {label}<br /><span style={{ fontSize: '1.5cqw', color: '#3c5260' }}>art placeholder</span>
+        </div>
+      )}
     </div>
   );
 }
 
 export function PlayerSprite({ anim, opacity }) {
   return (
-    <div style={{ position: 'absolute', left: '8%', bottom: '35.5%', width: '20%', animation: anim }}>
-      <div style={{ aspectRatio: '1/1', background: 'repeating-linear-gradient(135deg,#c7b48c 0 9px,#b8a57d 9px 18px)', border: '2px solid #6a5c3d', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', flexDirection: 'column', fontSize: '2.1cqw', color: '#332b18', padding: '4%', opacity }}>
-        SIGNER<br /><span style={{ fontSize: '1.5cqw', color: '#4d411f' }}>you</span>
-      </div>
+    <div style={{ position: 'absolute', left: '8%', bottom: '35.5%', width: '20%', aspectRatio: '1/1', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', animation: anim }}>
+      <img src="/assets/pokemon/pikachu-back.gif" alt="SIGNER" style={{ width: '65%', objectFit: 'contain', opacity, imageRendering: 'pixelated', display: 'block' }} />
     </div>
   );
 }
