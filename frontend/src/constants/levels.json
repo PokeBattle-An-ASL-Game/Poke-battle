@@ -34,21 +34,21 @@
       "name": "Level 5",
       "dataUrl": "/src/constants/levels/level-5.json",
       "image": "/assets/pokemon/gyarados.gif",
-      "available": false
+      "available": true
     },
     {
       "id": 6,
       "name": "Level 6",
       "dataUrl": "/src/constants/levels/level-6.json",
       "image": "/assets/pokemon/snorlax.gif",
-      "available": false
+      "available": true
     },
     {
       "id": 7,
       "name": "Level 7",
       "dataUrl": "/src/constants/levels/level-7.json",
       "image": "/assets/pokemon/mewtwo.gif",
-      "available": false
+      "available": true
     }
   ]
 }

@@ -6,7 +6,7 @@ import pytest
 from app.ml import recognizer as r
 from app.ml.features import EXTRACTOR_VERSION, extractor_fingerprint
 
-REGISTRY = {"HELLO": "hello"}
+REGISTRY = {"CITY": "city"}
 
 
 def write_model(tmp_path, artifact_format="stub"):
@@ -14,7 +14,7 @@ def write_model(tmp_path, artifact_format="stub"):
     manifest = {
         "manifestVersion": 1, "modelVersion": "stub-v1", "artifactFormat": artifact_format,
         "extractorVersion": EXTRACTOR_VERSION, "extractorFingerprint": extractor_fingerprint(),
-        "frameCount": 25, "labels": ["HELLO"], "qualifiedLabels": ["HELLO"],
+        "frameCount": 25, "labels": ["CITY"], "qualifiedLabels": ["CITY"],
         "weightsFile": "model.bin", "weightsSha256": hashlib.sha256(b"w").hexdigest(),
     }
     (tmp_path / "manifest.json").write_text(json.dumps(manifest))

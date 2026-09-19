@@ -9,7 +9,7 @@ from app.ml import wlasl_i3d as w
 from app.ml.manifest import ModelManifest
 from app.ml.recognizer import ModelNotReady
 
-CLASSES = {3: "HELLO", 7: "YES"}
+CLASSES = {3: "CITY", 7: "TABLE"}
 
 
 def trial_preprocess(frames_bgr):
@@ -66,7 +66,7 @@ def test_sample_indices_keeps_short_clips_and_spreads_long_ones():
 
 def test_decide_accepts_confident_known_sign():
     prediction = w.decide(logits({3: 10.0, 7: 2.0}), CLASSES, "v1")
-    assert prediction.label == "HELLO" and prediction.reason is None
+    assert prediction.label == "CITY" and prediction.reason is None
     assert 0.25 <= prediction.score <= 1.0 and prediction.model_version == "v1"
 
 
@@ -92,7 +92,7 @@ def test_decide_keeps_other_classes_in_margin():
 
 def test_decide_uses_custom_thresholds():
     prediction = w.decide(logits({3: 10.0, 7: 7.5}), CLASSES, "v1", min_margin=2.0)
-    assert prediction.label == "HELLO"
+    assert prediction.label == "CITY"
 
 
 def test_recognizer_takes_max_logit_over_time():
@@ -107,13 +107,13 @@ def test_recognizer_takes_max_logit_over_time():
     recognizer = w.WlaslRecognizer(fake_model, CLASSES, "v1")
     prediction = recognizer.predict_sequence(random_frames(25, 480, 640), [i * 100.0 for i in range(25)])
     assert seen == [(1, 3, 25, 224, 224)]
-    assert prediction.label == "YES" and prediction.reason is None
+    assert prediction.label == "TABLE" and prediction.reason is None
 
 
 def wlasl_manifest(**overrides):
     settings = {"preprocessingVersion": w.PREPROCESSING_VERSION, "frameCount": Config.FRAME_COUNT, "numClasses": 100,
-                "classMap": {"3": "HELLO", "7": "YES"}, "minProb": 0.3, "minMargin": 2.5, **overrides}
-    return ModelManifest("v1", "wlasl-i3d", ("HELLO", "YES"), frozenset({"HELLO"}), Path("w.pt"), settings)
+                "classMap": {"3": "CITY", "7": "TABLE"}, "minProb": 0.3, "minMargin": 2.5, **overrides}
+    return ModelManifest("v1", "wlasl-i3d", ("CITY", "TABLE"), frozenset({"CITY"}), Path("w.pt"), settings)
 
 
 def test_loader_builds_recognizer_from_manifest(monkeypatch):
@@ -133,14 +133,14 @@ def test_loader_builds_recognizer_from_manifest(monkeypatch):
         {"frameCount": True},
         {"numClasses": 1},
         {"numClasses": "100"},
-        {"classMap": {"3": "HELLO", "x": "YES"}},
-        {"classMap": {"3": "HELLO", "100": "YES"}},
-        {"classMap": {"3": "HELLO", "-7": "YES"}},
-        {"classMap": {"3": "HELLO", "03": "YES"}},
-        {"classMap": {"3": "HELLO", "7": "HELLO"}},
-        {"classMap": {"3": "HELLO"}},
-        {"classMap": {"3": "HELLO", "7": "WATER"}},
-        {"classMap": ["HELLO", "YES"]},
+        {"classMap": {"3": "CITY", "x": "TABLE"}},
+        {"classMap": {"3": "CITY", "100": "TABLE"}},
+        {"classMap": {"3": "CITY", "-7": "TABLE"}},
+        {"classMap": {"3": "CITY", "03": "TABLE"}},
+        {"classMap": {"3": "CITY", "7": "CITY"}},
+        {"classMap": {"3": "CITY"}},
+        {"classMap": {"3": "CITY", "7": "WATER"}},
+        {"classMap": ["CITY", "TABLE"]},
         {"minProb": 1.5},
         {"minProb": "0.25"},
         {"minProb": None},

@@ -39,35 +39,35 @@
   "moves": [
     {
       "id": "move-1",
-      "signId": "FINISH",
+      "signId": "SECRETARY",
       "difficulty": "easy",
       "damage": 10,
       "maxPP": 1
     },
     {
       "id": "move-2",
-      "signId": "BOOK",
+      "signId": "TELL",
       "difficulty": "easy",
       "damage": 15,
       "maxPP": 1
     },
     {
       "id": "move-3",
-      "signId": "LEARN",
+      "signId": "COMPUTER",
       "difficulty": "medium",
       "damage": 20,
       "maxPP": 1
     },
     {
       "id": "move-4",
-      "signId": "SCHOOL",
+      "signId": "BLACK",
       "difficulty": "medium",
       "damage": 25,
       "maxPP": 1
     },
     {
       "id": "move-5",
-      "signId": "FRIEND",
+      "signId": "CITY",
       "difficulty": "hard",
       "damage": 30,
       "maxPP": 1

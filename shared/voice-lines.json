@@ -3,10 +3,10 @@
   "status": "draft-not-generated",
   "language": "en-US",
   "lines": [
-    {"id": "choose_hello", "text": "Choose hello!", "event": "attack_selected", "signId": "HELLO"},
-    {"id": "choose_thank_you", "text": "Choose thank you!", "event": "attack_selected", "signId": "THANK_YOU"},
-    {"id": "choose_please", "text": "Choose please!", "event": "attack_selected", "signId": "PLEASE"},
-    {"id": "choose_yes", "text": "Choose yes!", "event": "attack_selected", "signId": "YES"},
+    {"id": "choose_city", "text": "Choose city!", "event": "attack_selected", "signId": "CITY"},
+    {"id": "choose_table", "text": "Choose table!", "event": "attack_selected", "signId": "TABLE"},
+    {"id": "choose_year", "text": "Choose year!", "event": "attack_selected", "signId": "YEAR"},
+    {"id": "choose_no", "text": "Choose no!", "event": "attack_selected", "signId": "NO"},
     {"id": "hit", "text": "Attack landed!", "event": "correct", "signId": null},
     {"id": "miss", "text": "Attack missed!", "event": "incorrect", "signId": null},
     {"id": "victory", "text": "Victory!", "event": "victory", "signId": null}

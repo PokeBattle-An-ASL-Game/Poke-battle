@@ -38,14 +38,14 @@
   "moves": [
     {
       "id": "move-1",
-      "signId": "HELLO",
+      "signId": "CITY",
       "difficulty": "easy",
       "damage": 50,
       "maxPP": 1
     },
     {
       "id": "move-2",
-      "signId": "YES",
+      "signId": "TABLE",
       "difficulty": "medium",
       "damage": 50,
       "maxPP": 1
