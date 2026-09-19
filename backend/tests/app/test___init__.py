@@ -55,8 +55,8 @@ def test_cors_preflight_allows_configured_origin_only(make_client):
     assert "Access-Control-Allow-Origin" not in denied.headers
 
 
-def test_real_repo_data_without_model_is_not_ready(post_attempt):
-    client = create_app().test_client()
+def test_real_repo_data_without_model_is_not_ready(post_attempt, tmp_path):
+    client = create_app({"MODEL_DIR": tmp_path / "no-model"}).test_client()
     assert client.application.extensions["pookie"]["recognizer"] is None
     response = post_attempt(client)
     assert (response.status_code, response.get_json()["error"]["code"]) == (503, "MODEL_NOT_READY")
