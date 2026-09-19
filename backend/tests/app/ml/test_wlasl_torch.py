@@ -1,5 +1,6 @@
 import hashlib
 import io
+import json
 
 import numpy as np
 import pytest
@@ -7,6 +8,7 @@ import pytest
 torch = pytest.importorskip("torch")
 
 from app.ml import wlasl_torch as t  # noqa: E402
+from app.ml.manifest import MANIFEST_FILE  # noqa: E402
 from app.ml.recognizer import ModelNotReady  # noqa: E402
 
 FAKE_SOURCE = b"""
@@ -98,16 +100,26 @@ def checkpoint(tmp_path, monkeypatch):
 
 
 def test_install_checkpoint_copies_verified_file(tmp_path, checkpoint):
-    target = t.install_checkpoint(checkpoint, tmp_path / "model")
-    assert target == tmp_path / "model" / "wlasl100_i3d.pt"
+    model_dir = tmp_path / "model"
+    target = t.install_checkpoint(checkpoint, model_dir)
+    assert target == model_dir / "wlasl100_i3d.pt"
     assert target.read_bytes() == b"pretend checkpoint"
-    assert list(target.parent.iterdir()) == [target]
+    manifest_path = model_dir / MANIFEST_FILE
+    assert set(model_dir.iterdir()) == {target, manifest_path}
+    data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert data["weightsFile"] == "wlasl100_i3d.pt"
+    assert data["weightsSha256"] == t.CHECKPOINT_SHA256
+    assert data["modelVersion"] == "wlasl100-i3d-provisional-v1"
+    assert len(data["labels"]) == 18 and data["labels"] == data["qualifiedLabels"]
 
 
 def test_install_checkpoint_keeps_existing_valid_file(tmp_path, checkpoint):
-    target = t.install_checkpoint(checkpoint, tmp_path / "model")
+    model_dir = tmp_path / "model"
+    target = t.install_checkpoint(checkpoint, model_dir)
     checkpoint.unlink()
-    assert t.install_checkpoint(checkpoint, tmp_path / "model") == target
+    (model_dir / MANIFEST_FILE).unlink()
+    assert t.install_checkpoint(checkpoint, model_dir) == target
+    assert (model_dir / MANIFEST_FILE).is_file()
 
 
 def test_install_checkpoint_rejects_other_file(tmp_path, checkpoint):

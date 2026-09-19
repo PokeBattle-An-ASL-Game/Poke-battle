@@ -11,8 +11,9 @@ import torch
 
 from ..config import REPO_ROOT, Config
 from .download import ModelFileError, fetch_verified
-from .manifest import sha256_file
+from .manifest import ManifestError, sha256_file, write_installed_manifest
 from .recognizer import ModelNotReady
+
 
 I3D_SOURCE_URL = (
     "https://raw.githubusercontent.com/dxli94/WLASL/"
@@ -30,21 +31,26 @@ def ensure_i3d_source(path: Path = I3D_SOURCE_PATH, opener=urllib.request.urlope
 
 
 def install_checkpoint(source: Path, model_dir: Path = Config.MODEL_DIR) -> Path:
-    target = Path(model_dir) / CHECKPOINT_NAME
-    if target.is_file() and sha256_file(target) == CHECKPOINT_SHA256:
-        return target
-    target.parent.mkdir(parents=True, exist_ok=True)
-    partial = target.with_suffix(".part")
+    model_dir = Path(model_dir)
+    target = model_dir / CHECKPOINT_NAME
+    if not (target.is_file() and sha256_file(target) == CHECKPOINT_SHA256):
+        model_dir.mkdir(parents=True, exist_ok=True)
+        partial = target.with_suffix(".part")
+        try:
+            shutil.copyfile(source, partial)
+            if sha256_file(partial) != CHECKPOINT_SHA256:
+                raise ModelFileError("checkpoint checksum mismatch; expected the WLASL100 I3D trial checkpoint")
+            partial.replace(target)
+        except OSError as error:
+            raise ModelFileError(f"checkpoint copy failed: {error}") from None
+        finally:
+            partial.unlink(missing_ok=True)
     try:
-        shutil.copyfile(source, partial)
-        if sha256_file(partial) != CHECKPOINT_SHA256:
-            raise ModelFileError("checkpoint checksum mismatch; expected the WLASL100 I3D trial checkpoint")
-        partial.replace(target)
-    except OSError as error:
-        raise ModelFileError(f"checkpoint copy failed: {error}") from None
-    finally:
-        partial.unlink(missing_ok=True)
+        write_installed_manifest(model_dir, weights_sha256=CHECKPOINT_SHA256)
+    except ManifestError as error:
+        raise ModelFileError(str(error)) from None
     return target
+
 
 
 def _i3d_class(source_path: Path):

@@ -6,11 +6,29 @@ from pathlib import Path
 from .features import EXTRACTOR_VERSION, FRAME_COUNT, extractor_fingerprint
 
 MANIFEST_FILE = "manifest.json"
+MANIFEST_TEMPLATE = Path(__file__).with_name("wlasl100_manifest.json")
 RAW_VIDEO_FORMATS = frozenset({"wlasl-i3d"})
 
 
 class ManifestError(Exception):
     pass
+
+
+def write_installed_manifest(model_dir: Path, weights_sha256: str | None = None) -> Path:
+    """Copy the committed WLASL100 template into ``model_dir/manifest.json``."""
+    try:
+        data = json.loads(MANIFEST_TEMPLATE.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
+        raise ManifestError("manifest template unreadable") from error
+    if not isinstance(data, dict):
+        raise ManifestError("manifest template invalid")
+    if weights_sha256 is not None:
+        data["weightsSha256"] = weights_sha256
+    dest = Path(model_dir) / MANIFEST_FILE
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    return dest
+
 
 
 @dataclass(frozen=True)
