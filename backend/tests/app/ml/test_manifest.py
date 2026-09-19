@@ -6,7 +6,7 @@ import pytest
 from app.ml import manifest as m
 from app.ml.features import EXTRACTOR_VERSION, extractor_fingerprint
 
-REGISTRY = {"HELLO": "hello", "YES": "yes", "NO": None}
+REGISTRY = {"CITY": "city", "TABLE": "table", "NO": None}
 
 
 def write_model(tmp_path, weights=b"fake-weights", **overrides):
@@ -18,8 +18,8 @@ def write_model(tmp_path, weights=b"fake-weights", **overrides):
         "extractorVersion": EXTRACTOR_VERSION,
         "extractorFingerprint": extractor_fingerprint(),
         "frameCount": 25,
-        "labels": ["HELLO", "YES", "NO"],
-        "qualifiedLabels": ["HELLO", "NO"],
+        "labels": ["CITY", "TABLE", "NO"],
+        "qualifiedLabels": ["CITY", "NO"],
         "weightsFile": "model.bin",
         "weightsSha256": hashlib.sha256(b"fake-weights").hexdigest(),
         **overrides,
@@ -31,7 +31,7 @@ def test_valid_manifest(tmp_path):
     write_model(tmp_path)
     manifest = m.load_manifest(tmp_path, REGISTRY)
     assert manifest.model_version == "test-v1"
-    assert manifest.qualified_labels == {"HELLO", "NO"}
+    assert manifest.qualified_labels == {"CITY", "NO"}
     assert manifest.weights_path == tmp_path / "model.bin"
 
 
@@ -48,10 +48,10 @@ def test_missing_manifest(tmp_path):
         {"extractorFingerprint": "0" * 64},
         {"frameCount": 24},
         {"frameCount": True},
-        {"labels": ["HELLO", "HELLO"]},
-        {"labels": ["HELLO", "NOT_A_SIGN"]},
-        {"labels": ["HELLO", 5]},
-        {"qualifiedLabels": ["YES", "WATER"]},
+        {"labels": ["CITY", "CITY"]},
+        {"labels": ["CITY", "NOT_A_SIGN"]},
+        {"labels": ["CITY", 5]},
+        {"qualifiedLabels": ["TABLE", "WATER"]},
         {"weightsFile": "../model.bin"},
         {"weightsFile": "missing.bin"},
         {"weightsSha256": "0" * 64},
@@ -93,7 +93,7 @@ def test_broken_json_rejected(tmp_path):
 def test_sign_qualification(tmp_path):
     write_model(tmp_path)
     manifest = m.load_manifest(tmp_path, REGISTRY)
-    assert m.is_sign_qualified("HELLO", REGISTRY, manifest)
-    assert not m.is_sign_qualified("YES", REGISTRY, manifest)
+    assert m.is_sign_qualified("CITY", REGISTRY, manifest)
+    assert not m.is_sign_qualified("TABLE", REGISTRY, manifest)
     assert not m.is_sign_qualified("NO", REGISTRY, manifest)
     assert not m.is_sign_qualified("WATER", REGISTRY, manifest)

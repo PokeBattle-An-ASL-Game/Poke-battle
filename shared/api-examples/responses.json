@@ -1,15 +1,15 @@
 {
   "correct": {
     "httpStatus": 200,
-    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "status": "correct", "correct": true, "expectedSign": "HELLO", "recognizedSign": "HELLO", "confidence": 0.91, "reason": null, "modelVersion": "isolated-words-v1"}
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "status": "correct", "correct": true, "expectedSign": "CITY", "recognizedSign": "CITY", "confidence": 0.91, "reason": null, "modelVersion": "isolated-words-v1"}
   },
   "incorrect": {
     "httpStatus": 200,
-    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "status": "incorrect", "correct": false, "expectedSign": "HELLO", "recognizedSign": "YES", "confidence": 0.88, "reason": "different_sign", "modelVersion": "isolated-words-v1"}
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "status": "incorrect", "correct": false, "expectedSign": "CITY", "recognizedSign": "TABLE", "confidence": 0.88, "reason": "different_sign", "modelVersion": "isolated-words-v1"}
   },
   "retry": {
     "httpStatus": 200,
-    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "status": "retry", "correct": null, "expectedSign": "HELLO", "recognizedSign": null, "confidence": null, "reason": "hands_not_visible", "modelVersion": "isolated-words-v1"}
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "status": "retry", "correct": null, "expectedSign": "CITY", "recognizedSign": null, "confidence": null, "reason": "hands_not_visible", "modelVersion": "isolated-words-v1"}
   },
   "BAD_REQUEST": {
     "httpStatus": 400,

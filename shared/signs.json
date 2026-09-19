@@ -2,244 +2,148 @@
   "schemaVersion": 1,
   "signs": [
     {
-      "id": "HELLO",
-      "displayText": "HELLO",
-      "modelLabel": null,
+      "id": "CITY",
+      "displayText": "CITY",
+      "modelLabel": "city",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "YES",
-      "displayText": "YES",
-      "modelLabel": null,
+      "id": "TABLE",
+      "displayText": "TABLE",
+      "modelLabel": "table",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "THANK_YOU",
-      "displayText": "THANK YOU",
-      "modelLabel": null,
+      "id": "YEAR",
+      "displayText": "YEAR",
+      "modelLabel": "year",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "PLEASE",
-      "displayText": "PLEASE",
-      "modelLabel": null,
+      "id": "HOT",
+      "displayText": "HOT",
+      "modelLabel": "hot",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
+    },
+    {
+      "id": "BIRD",
+      "displayText": "BIRD",
+      "modelLabel": "bird",
+      "referenceVideo": null,
+      "approvedTeachingNotes": null,
+      "status": "provisional-awaiting-webcam-validation"
+    },
+    {
+      "id": "KISS",
+      "displayText": "KISS",
+      "modelLabel": "kiss",
+      "referenceVideo": null,
+      "approvedTeachingNotes": null,
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
       "id": "NO",
       "displayText": "NO",
-      "modelLabel": null,
+      "modelLabel": "no",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "HELP",
-      "displayText": "HELP",
-      "modelLabel": null,
+      "id": "BASKETBALL",
+      "displayText": "BASKETBALL",
+      "modelLabel": "basketball",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "SORRY",
-      "displayText": "SORRY",
-      "modelLabel": null,
+      "id": "WHITE",
+      "displayText": "WHITE",
+      "modelLabel": "white",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "STOP",
-      "displayText": "STOP",
-      "modelLabel": null,
+      "id": "CHAIR",
+      "displayText": "CHAIR",
+      "modelLabel": "chair",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "GO",
-      "displayText": "GO",
-      "modelLabel": null,
+      "id": "BED",
+      "displayText": "BED",
+      "modelLabel": "bed",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "EAT",
-      "displayText": "EAT",
-      "modelLabel": null,
+      "id": "FISH",
+      "displayText": "FISH",
+      "modelLabel": "fish",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "DRINK",
-      "displayText": "DRINK",
-      "modelLabel": null,
+      "id": "LAST",
+      "displayText": "LAST",
+      "modelLabel": "last",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "WATER",
-      "displayText": "WATER",
-      "modelLabel": null,
+      "id": "SECRETARY",
+      "displayText": "SECRETARY",
+      "modelLabel": "secretary",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "MORE",
-      "displayText": "MORE",
-      "modelLabel": null,
+      "id": "TELL",
+      "displayText": "TELL",
+      "modelLabel": "tell",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
+    },
+    {
+      "id": "COMPUTER",
+      "displayText": "COMPUTER",
+      "modelLabel": "computer",
+      "referenceVideo": null,
+      "approvedTeachingNotes": null,
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
       "id": "FINISH",
       "displayText": "FINISH",
-      "modelLabel": null,
+      "modelLabel": "finish",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "BOOK",
-      "displayText": "BOOK",
-      "modelLabel": null,
+      "id": "BLACK",
+      "displayText": "BLACK",
+      "modelLabel": "black",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "LEARN",
-      "displayText": "LEARN",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "SCHOOL",
-      "displayText": "SCHOOL",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "FRIEND",
-      "displayText": "FRIEND",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "FAMILY",
-      "displayText": "FAMILY",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "MOTHER",
-      "displayText": "MOTHER",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "FATHER",
-      "displayText": "FATHER",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "NAME",
-      "displayText": "NAME",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "WHAT",
-      "displayText": "WHAT",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "WHERE",
-      "displayText": "WHERE",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "WHO",
-      "displayText": "WHO",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "HAPPY",
-      "displayText": "HAPPY",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "SAD",
-      "displayText": "SAD",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "GOOD",
-      "displayText": "GOOD",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "BAD",
-      "displayText": "BAD",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
-    },
-    {
-      "id": "AGAIN",
-      "displayText": "AGAIN",
-      "modelLabel": null,
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "proposed"
+      "status": "provisional-awaiting-webcam-validation"
     }
   ]
 }

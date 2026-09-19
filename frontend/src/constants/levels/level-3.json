@@ -38,28 +38,28 @@
   "moves": [
     {
       "id": "move-1",
-      "signId": "HELP",
+      "signId": "NO",
       "difficulty": "easy",
       "damage": 15,
       "maxPP": 1
     },
     {
       "id": "move-2",
-      "signId": "SORRY",
+      "signId": "BASKETBALL",
       "difficulty": "medium",
       "damage": 20,
       "maxPP": 1
     },
     {
       "id": "move-3",
-      "signId": "STOP",
+      "signId": "WHITE",
       "difficulty": "medium",
       "damage": 25,
       "maxPP": 1
     },
     {
       "id": "move-4",
-      "signId": "GO",
+      "signId": "CHAIR",
       "difficulty": "hard",
       "damage": 40,
       "maxPP": 1

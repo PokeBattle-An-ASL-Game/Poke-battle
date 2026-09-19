@@ -9,7 +9,7 @@ LEVEL_IDS = range(1, 8)
 
 
 def write_level(tmp_path, level_id=1, moves=None, available=True, **extra):
-    moves = moves if moves is not None else [{"id": "move-1", "signId": "HELLO"}, {"id": "move-2", "signId": "YES"}]
+    moves = moves if moves is not None else [{"id": "move-1", "signId": "CITY"}, {"id": "move-2", "signId": "TABLE"}]
     data = {"id": level_id, "available": available, "moves": moves, **extra}
     (tmp_path / f"level-{level_id}.json").write_text(json.dumps(data))
 
@@ -22,7 +22,7 @@ def test_loads_level_and_resolves_sign(tmp_path):
     write_level(tmp_path)
     level = g.load_level(tmp_path, 1, LEVEL_IDS)
     assert level.available is True
-    assert g.resolve_sign(level, "move-2") == "YES"
+    assert g.resolve_sign(level, "move-2") == "TABLE"
     with pytest.raises(g.MoveNotFound):
         g.resolve_sign(level, "move-3")
 
@@ -81,18 +81,25 @@ def test_available_must_be_literally_true(tmp_path):
     assert g.load_level(tmp_path, 1, LEVEL_IDS).available is False
 
 
-def test_real_repo_levels_load_with_30_unique_signs():
+def test_real_repo_levels_have_30_slots_and_18_unique_signs():
     signs = []
     for level_id in LEVEL_IDS:
         level = g.load_level(Config.LEVELS_DIR, level_id, LEVEL_IDS)
-        signs.extend(level.moves.values())
-    assert len(signs) == len(set(signs)) == 30
+        level_signs = list(level.moves.values())
+        assert len(level_signs) == len(set(level_signs))
+        assert level.available is True
+        signs.extend(level_signs)
+    assert len(signs) == 30
+    assert len(set(signs)) == 18
+    registry = g.load_sign_registry(Config.SIGNS_PATH)
+    assert set(signs) <= set(registry)
 
 
 def test_real_sign_registry():
     registry = g.load_sign_registry(Config.SIGNS_PATH)
-    assert len(registry) == 30 and "HELLO" in registry
-    assert all(label is None for label in registry.values())
+    assert len(registry) == 18
+    assert "HELLO" not in registry and "CITY" in registry
+    assert all(isinstance(label, str) and label for label in registry.values())
 
 
 def test_bad_registry_rejected(tmp_path):

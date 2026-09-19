@@ -16,11 +16,12 @@ The backend never stores HP, PP, moves, progress, camera images or landmarks. Th
 
 ## Game data
 
-- `frontend/src/constants/levels.json` — index of the seven level cards.
-- `frontend/src/constants/levels/level-1.json` … `level-7.json` — each level's own moves, damage and opponent. **30 unique proposed ASL words** split 2/3/4/4/5/6/6 across the levels.
+- `frontend/src/constants/levels.json` — index of the seven level cards (all `available: true`).
+- `frontend/src/constants/levels/level-1.json` … `level-7.json` — each level's own moves, damage and opponent. **18 unique WLASL signs** are reused across **30 move slots**, split 2/3/4/4/5/6/6 across the levels.
+  - A sign may repeat across different levels, but never twice within the same level.
   - Every move has `maxPP: 1`; move damage in each level sums to the opponent's 100 HP.
   - Opponent attacks deal 10 HP.
-- `shared/signs.json` — the 30 proposed sign IDs. Model labels, reference videos and teaching notes are `null` until reviewed.
+- `shared/signs.json` — exactly **18** sign IDs with non-null `modelLabel` values matching lowercase WLASL100 glosses. The vocabulary and acceptance thresholds are **provisional** and have not yet been fully webcam-validated.
 - `shared/voice-lines.json` — draft narration text (no audio generated yet).
 
 ## Assets
@@ -53,7 +54,7 @@ npm run dev      # serves http://localhost:5173
 npm run build    # production build into frontend/dist
 ```
 
-The battle screen's sign-capture step records real webcam frames (`frontend/src/constants/capture.js`'s `FRAME_COUNT`, 64 by default — must match the backend's `POOKIE_FRAME_COUNT`) and posts them to `POST /api/validate-sign` at `VITE_API_BASE_URL` (defaults to `http://localhost:5000`).
+The battle screen's sign-capture step records real webcam frames (`frontend/src/constants/capture.js`'s `FRAME_COUNT`, 64 by default — must match the backend's `POOKIE_FRAME_COUNT`) and posts them to `POST /api/validate-sign` at `VITE_API_BASE_URL` (defaults to `http://localhost:5001`).
 
 ### Backend (Flask API + shared feature extractor)
 
@@ -99,5 +100,5 @@ Every possible API response is listed in `shared/api-examples/responses.json`; a
 ## Contributing rules
 
 - Don't commit `.env` files, API keys, datasets, videos, extracted features or model weights (see `.gitignore`).
-- Levels are `available: true` by team decision. The server only judges a sign that has a `modelLabel` in `shared/signs.json` and is in the model's `qualifiedLabels`; otherwise it answers `422 SIGN_UNAVAILABLE`. Don't add either until the sign has reviewed teaching material, confirmed usage rights and measured model support.
+- Levels are `available: true` by team decision. The game uses **18 unique WLASL signs** across **30 move slots** (signs may repeat across levels, not within one level). The server only judges a sign that has a `modelLabel` in `shared/signs.json` and is in the model's `qualifiedLabels`; otherwise it answers `422 SIGN_UNAVAILABLE`. Vocabulary and thresholds remain provisional until webcam validation is complete. Don't add a sign to `qualifiedLabels` until it has reviewed teaching material, confirmed usage rights and measured model support.
 - Don't present mock or simulated recognition as a working ASL model.

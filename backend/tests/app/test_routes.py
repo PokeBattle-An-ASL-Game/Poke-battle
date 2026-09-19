@@ -9,8 +9,8 @@ from app.ml.recognizer import Prediction
 EXAMPLES = json.loads((REPO_ROOT / "shared/api-examples/responses.json").read_text())
 EXAMPLE_ID = "583fe810-53c8-42ab-9c70-64f7264c8255"
 EXAMPLE_SCENARIOS = {
-    "correct": ({}, Prediction("HELLO", 0.91, None, "isolated-words-v1"), {}),
-    "incorrect": ({}, Prediction("YES", 0.88, None, "isolated-words-v1"), {}),
+    "correct": ({}, Prediction("CITY", 0.91, None, "isolated-words-v1"), {}),
+    "incorrect": ({}, Prediction("TABLE", 0.88, None, "isolated-words-v1"), {}),
     "retry": ({}, Prediction(None, None, "hands_not_visible", "isolated-words-v1"), {}),
     "BAD_REQUEST": ({"levelId": "abc"}, None, {}),
     "NOT_FOUND": ({"levelId": "9"}, None, {}),
@@ -44,7 +44,7 @@ def test_correct_response_matches_contract(make_client, post_attempt):
     assert response.status_code == 200
     assert response.get_json() == {
         "requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "status": "correct", "correct": True,
-        "expectedSign": "HELLO", "recognizedSign": "HELLO", "confidence": 0.9, "reason": None,
+        "expectedSign": "CITY", "recognizedSign": "CITY", "confidence": 0.9, "reason": None,
         "modelVersion": "fake-v1",
     }
 
@@ -52,11 +52,11 @@ def test_correct_response_matches_contract(make_client, post_attempt):
 @pytest.mark.parametrize(
     "prediction, status, reason",
     [
-        (Prediction("YES", 0.8, None, "fake-v1"), "incorrect", "different_sign"),
+        (Prediction("TABLE", 0.8, None, "fake-v1"), "incorrect", "different_sign"),
         (Prediction(None, None, "hands_not_visible", "fake-v1"), "retry", "hands_not_visible"),
         (Prediction(None, 0.3, "something_else", "fake-v1"), "retry", "uncertain_prediction"),
         (Prediction("NO", 0.99, None, "fake-v1"), "retry", "uncertain_prediction"),
-        (Prediction("HELLO", 0.9, "uncertain_prediction", "fake-v1"), "retry", "uncertain_prediction"),
+        (Prediction("CITY", 0.9, "uncertain_prediction", "fake-v1"), "retry", "uncertain_prediction"),
     ],
 )
 def test_incorrect_and_retry(make_client, post_attempt, fake_recognizer, prediction, status, reason):
@@ -70,7 +70,7 @@ def test_incorrect_and_retry(make_client, post_attempt, fake_recognizer, predict
     "fields, frames, status, code",
     [
         ({"levelId": "abc"}, None, 400, "BAD_REQUEST"),
-        ({"expectedSign": "HELLO"}, None, 400, "BAD_REQUEST"),
+        ({"expectedSign": "CITY"}, None, 400, "BAD_REQUEST"),
         ({"levelId": "9"}, None, 404, "NOT_FOUND"),
         ({"moveId": "move-7"}, None, 404, "NOT_FOUND"),
         ({"levelId": "2"}, None, 422, "LEVEL_UNAVAILABLE"),
@@ -96,9 +96,9 @@ def test_request_id_echoed_on_error_and_null_when_invalid(make_client, post_atte
     "prediction, error",
     [
         (None, RuntimeError("boom")),
-        (Prediction("HELLO", 0.9, None, "other-model"), None),
-        (Prediction("HELLO", float("nan"), None, "fake-v1"), None),
-        (Prediction("HELLO", 1.5, None, "fake-v1"), None),
+        (Prediction("CITY", 0.9, None, "other-model"), None),
+        (Prediction("CITY", float("nan"), None, "fake-v1"), None),
+        (Prediction("CITY", 1.5, None, "fake-v1"), None),
         ("not a prediction", None),
     ],
 )

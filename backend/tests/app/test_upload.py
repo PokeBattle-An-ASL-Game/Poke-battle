@@ -43,7 +43,7 @@ def test_valid_attempt(config, make_jpeg):
         {"levelId": "01"},
         {"moveId": "../level-2"},
         {"moveId": ""},
-        {"expectedSign": "HELLO"},
+        {"expectedSign": "CITY"},
         {"timestampsMs": "not json"},
         {"timestampsMs": json.dumps(STAMPS[:24])},
         {"timestampsMs": json.dumps(STAMPS[:24] + [2300.0])},

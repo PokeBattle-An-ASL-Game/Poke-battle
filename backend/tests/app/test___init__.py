@@ -62,9 +62,15 @@ def test_real_repo_data_without_model_is_not_ready(post_attempt):
     assert (response.status_code, response.get_json()["error"]["code"]) == (503, "MODEL_NOT_READY")
 
 
-def test_real_repo_signs_stay_unavailable_even_with_a_model(post_attempt, fake_recognizer, fake_manifest):
+def test_real_repo_sign_requires_manifest_qualification(post_attempt, fake_recognizer):
+    # Real level-1 move-1 is CITY; a manifest that only qualifies SECRETARY must not judge it.
+    from pathlib import Path
+
+    from app.ml.manifest import ModelManifest
+
+    manifest = ModelManifest("fake-v1", "fake", ("SECRETARY",), frozenset({"SECRETARY"}), Path("x"))
     recognizer = fake_recognizer()
-    client = create_app(recognizer=recognizer, manifest=fake_manifest).test_client()
+    client = create_app(recognizer=recognizer, manifest=manifest).test_client()
     response = post_attempt(client)
     assert (response.status_code, response.get_json()["error"]["code"]) == (422, "SIGN_UNAVAILABLE")
     assert recognizer.calls == 0
