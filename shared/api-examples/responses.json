@@ -1,0 +1,42 @@
+{
+  "correct": {
+    "httpStatus": 200,
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "status": "correct", "correct": true, "expectedSign": "HELLO", "recognizedSign": "HELLO", "confidence": 0.91, "reason": null, "modelVersion": "isolated-words-v1"}
+  },
+  "incorrect": {
+    "httpStatus": 200,
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "status": "incorrect", "correct": false, "expectedSign": "HELLO", "recognizedSign": "YES", "confidence": 0.88, "reason": "different_sign", "modelVersion": "isolated-words-v1"}
+  },
+  "retry": {
+    "httpStatus": 200,
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "status": "retry", "correct": null, "expectedSign": "HELLO", "recognizedSign": null, "confidence": null, "reason": "hands_not_visible", "modelVersion": "isolated-words-v1"}
+  },
+  "BAD_REQUEST": {
+    "httpStatus": 400,
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "error": {"code": "BAD_REQUEST", "message": "The sign attempt could not be read."}}
+  },
+  "NOT_FOUND": {
+    "httpStatus": 404,
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "error": {"code": "NOT_FOUND", "message": "Unknown level or move."}}
+  },
+  "UPLOAD_TOO_LARGE": {
+    "httpStatus": 413,
+    "body": {"requestId": null, "error": {"code": "UPLOAD_TOO_LARGE", "message": "The upload is too large."}}
+  },
+  "LEVEL_UNAVAILABLE": {
+    "httpStatus": 422,
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "error": {"code": "LEVEL_UNAVAILABLE", "message": "This level is not available yet."}}
+  },
+  "SIGN_UNAVAILABLE": {
+    "httpStatus": 422,
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "error": {"code": "SIGN_UNAVAILABLE", "message": "This sign is not available yet."}}
+  },
+  "MODEL_NOT_READY": {
+    "httpStatus": 503,
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "error": {"code": "MODEL_NOT_READY", "message": "Recognition is temporarily unavailable."}}
+  },
+  "INFERENCE_UNAVAILABLE": {
+    "httpStatus": 503,
+    "body": {"requestId": "583fe810-53c8-42ab-9c70-64f7264c8255", "error": {"code": "INFERENCE_UNAVAILABLE", "message": "Recognition is temporarily unavailable."}}
+  }
+}

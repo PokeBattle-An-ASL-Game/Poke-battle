@@ -9,7 +9,7 @@ A Pokémon-style battle game where players attack by performing American Sign La
 | Part | Tech | Responsibility |
 | --- | --- | --- |
 | `frontend/` | React + TypeScript | UI, camera capture, battle state (HP, PP, four attack slots, FIFO reserve queue), opponent turns, versioned `localStorage` progress |
-| `backend/` *(not yet created)* | Flask + Python ML | A single application endpoint, `POST /api/validate-sign`, that checks a captured sign against the expected move |
+| `backend/` | Flask + Python ML | A single application endpoint, `POST /api/validate-sign`, that checks a captured sign against the expected move |
 | `shared/` | JSON | Sign registry and draft narration lines shared by frontend and backend |
 
 The backend never stores HP, PP, moves, progress, camera images or landmarks. There are no user accounts, database or server-side game sessions.
@@ -29,7 +29,7 @@ The backend never stores HP, PP, moves, progress, camera images or landmarks. Th
 
 ## Setup
 
-Prerequisites (for the upcoming app code): Node.js 18+ and Python 3.10+.
+Prerequisites: Node.js 18+ (frontend) and Python 3.12 (backend).
 
 ```bash
 git clone https://github.com/RohithNair27/Poke-battle.git
@@ -44,7 +44,31 @@ To check that the level JSON files parse:
 python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('frontend/src/constants/**/*.json', recursive=True) + glob.glob('shared/*.json')]; print('OK')"
 ```
 
-Frontend (`npm install`, `npm run dev`) and backend (`python -m venv .venv`, `pip install -r requirements.txt`) setup steps will be added once that code is in place.
+Frontend setup steps will be added once that code is in place.
+
+### Backend (Flask API + shared feature extractor)
+
+```bash
+cd backend
+python3.12 -m venv .venv
+.venv/bin/pip install -r requirements-ml.txt -r requirements-dev.txt
+.venv/bin/python -m app.ml.holistic_model   # downloads the pinned MediaPipe model and checks its SHA-256
+.venv/bin/python -m pytest                  # run the backend tests
+.venv/bin/flask --app "app:create_app()" run   # serves http://localhost:5000
+```
+
+With the server running, `tools/sample_request.sh [base_url] [levelId] [moveId]` sends one real 25-frame request. Until a qualified model exists and a level is enabled, expect `422 LEVEL_UNAVAILABLE` or `503 MODEL_NOT_READY`; that is the intended honest behaviour.
+
+Environment variables (all optional):
+
+| Variable | Default |
+| --- | --- |
+| `POOKIE_CORS_ORIGINS` | `http://localhost:5173` (comma-separated) |
+| `POOKIE_MODEL_DIR` | `backend/app/ml/artifacts` |
+| `POOKIE_LEVELS_DIR` | `frontend/src/constants/levels` |
+| `POOKIE_SIGNS_PATH` | `shared/signs.json` |
+
+Every possible API response is listed in `shared/api-examples/responses.json`; a backend test keeps it identical to what the server actually returns, so frontend mocks can use it directly.
 
 ## Contributing rules
 
