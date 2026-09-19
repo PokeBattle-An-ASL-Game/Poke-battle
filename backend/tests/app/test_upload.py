@@ -11,6 +11,12 @@ REQUEST_ID = str(uuid.uuid4())
 STAMPS = [i * 100.0 for i in range(25)]
 
 
+@pytest.fixture
+def config(config):
+    # This module's fixtures assume 25 frames regardless of the app's configured FRAME_COUNT.
+    return {**config, "FRAME_COUNT": 25}
+
+
 def form(**overrides):
     fields = {"requestId": REQUEST_ID, "levelId": "1", "moveId": "move-1", "timestampsMs": json.dumps(STAMPS)}
     fields.update(overrides)

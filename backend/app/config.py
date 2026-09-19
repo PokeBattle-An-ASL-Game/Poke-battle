@@ -15,7 +15,9 @@ class Config:
     CORS_ORIGINS = _origins(os.environ.get("POOKIE_CORS_ORIGINS", "http://localhost:5173"))
 
     LEVEL_IDS = range(1, 8)
-    FRAME_COUNT = 25
+    # Priyanka's 25 vs 48 vs 64 comparison on the WLASL model favored 64 (near real-time
+    # capture); override with POOKIE_FRAME_COUNT if that changes.
+    FRAME_COUNT = int(os.environ.get("POOKIE_FRAME_COUNT", "64"))
     MAX_CONTENT_LENGTH = 6 * 1024 * 1024
     MAX_FRAME_BYTES = 200 * 1024
     MAX_FRAME_WIDTH = 1280

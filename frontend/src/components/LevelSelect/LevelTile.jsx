@@ -10,7 +10,7 @@ export default function LevelTile({ level, locked, palette, scale = 1, onOpen })
         minHeight: 0, display: 'flex', flexDirection: 'column', alignItems: 'center',
         justifyContent: 'flex-end', gap: 8,
         cursor: locked ? 'not-allowed' : 'pointer',
-        filter: locked ? 'grayscale(.6) brightness(.85) opacity(.75)' : 'none',
+        filter: locked ? 'grayscale(1) brightness(.55)' : 'none',
       }}
     >
       <div style={{ position: 'relative', flex: 1, minHeight: 0, aspectRatio: '1/1', maxWidth: image ? 208 : 104, maxHeight: image ? 208 : 104, alignSelf: 'center' }}>
@@ -25,8 +25,13 @@ export default function LevelTile({ level, locked, palette, scale = 1, onOpen })
             <div style={{ position: 'absolute', left: 0, right: 0, bottom: '24%', textAlign: 'center', fontFamily: "'Silkscreen',monospace", fontSize: 26, color: 'rgba(255,255,255,.85)' }}>?</div>
           </>
         )}
+        {locked && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(8,16,20,.72)', border: '2px solid rgba(255,255,255,.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, color: '#fff' }}>🔒</div>
+          </div>
+        )}
       </div>
-      <span style={{ fontFamily: "'Silkscreen',monospace", fontSize: 13, letterSpacing: '.05em', textShadow: '0 1px 0 rgba(255,255,255,.5)', color: locked ? '#2b3a3f' : '#12323f' }}>
+      <span style={{ fontFamily: "'Silkscreen',monospace", fontSize: 13, letterSpacing: '.05em', textShadow: '0 1px 0 rgba(255,255,255,.5)', color: locked ? 'rgba(18,50,63,.55)' : '#12323f' }}>
         {level.name}
       </span>
     </button>

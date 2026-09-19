@@ -53,7 +53,7 @@ npm run dev      # serves http://localhost:5173
 npm run build    # production build into frontend/dist
 ```
 
-The battle screen's sign-capture step is a self-contained simulation (25 fake recorded frames, then a manual correct/incorrect/retry pick) — it does not call `POST /api/validate-sign` yet.
+The battle screen's sign-capture step records real webcam frames (`frontend/src/constants/capture.js`'s `FRAME_COUNT`, 64 by default — must match the backend's `POOKIE_FRAME_COUNT`) and posts them to `POST /api/validate-sign` at `VITE_API_BASE_URL` (defaults to `http://localhost:5000`).
 
 ### Backend (Flask API + shared feature extractor)
 
@@ -82,7 +82,7 @@ The backend can run the pretrained WLASL100 I3D video model. **The WLASL dataset
 
 This downloads WLASL's `pytorch_i3d.py` (pinned commit, SHA-256 checked) into `app/ml/artifacts/wlasl/` and copies the checkpoint to `app/ml/artifacts/wlasl100_i3d.pt` after checking its SHA-256. The server still answers `503 MODEL_NOT_READY` until a `manifest.json` with the agreed class map and webcam-tested thresholds is added.
 
-With the server running, `tools/sample_request.sh [base_url] [levelId] [moveId]` sends one real 25-frame request. Until a qualified model exists and a level is enabled, expect `422 LEVEL_UNAVAILABLE` or `503 MODEL_NOT_READY`; that is the intended honest behaviour.
+With the server running, `tools/sample_request.sh [base_url] [levelId] [moveId]` sends one real request built with `Config.FRAME_COUNT` frames (64 by default). Until a qualified model exists and a level is enabled, expect `422 LEVEL_UNAVAILABLE` or `503 MODEL_NOT_READY`; that is the intended honest behaviour.
 
 Environment variables (all optional):
 
@@ -91,6 +91,7 @@ Environment variables (all optional):
 | `POOKIE_CORS_ORIGINS` | `http://localhost:5173` (comma-separated) |
 | `POOKIE_MODEL_DIR` | `backend/app/ml/artifacts` |
 | `POOKIE_LEVELS_DIR` | `frontend/src/constants/levels` |
+| `POOKIE_FRAME_COUNT` | `64` (frames per `POST /api/validate-sign` attempt; must match the frontend capture count and the WLASL manifest's `frameCount`) |
 | `POOKIE_SIGNS_PATH` | `shared/signs.json` |
 
 Every possible API response is listed in `shared/api-examples/responses.json`; a backend test keeps it identical to what the server actually returns, so frontend mocks can use it directly.

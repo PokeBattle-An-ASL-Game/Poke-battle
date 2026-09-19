@@ -9,12 +9,16 @@ BACKEND_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 FRAMES_DIR="$(mktemp -d)"
 trap 'rm -rf "$FRAMES_DIR"' EXIT
 
-read -r REQUEST_ID TIMESTAMPS < <("$BACKEND_DIR/.venv/bin/python" - "$FRAMES_DIR" <<'EOF'
+read -r REQUEST_ID TIMESTAMPS < <("$BACKEND_DIR/.venv/bin/python" - "$BACKEND_DIR" "$FRAMES_DIR" <<'EOF'
 import json, sys, uuid
+sys.path.insert(0, sys.argv[1])
+from app.config import Config
 from PIL import Image
-for i in range(25):
-    Image.new("RGB", (640, 480), (i * 10, 90, 120)).save(f"{sys.argv[1]}/frame-{i:02d}.jpg", quality=80)
-print(uuid.uuid4(), json.dumps([i * 100 for i in range(25)], separators=(",", ":")))
+n = Config.FRAME_COUNT
+step = min(100, 4900 // max(n - 1, 1))  # stay under MAX_SEQUENCE_SPAN_MS regardless of frame count
+for i in range(n):
+    Image.new("RGB", (640, 480), (i * 10 % 256, 90, 120)).save(f"{sys.argv[2]}/frame-{i:03d}.jpg", quality=80)
+print(uuid.uuid4(), json.dumps([i * step for i in range(n)], separators=(",", ":")))
 EOF
 )
 
