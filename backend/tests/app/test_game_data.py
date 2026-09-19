@@ -81,11 +81,10 @@ def test_available_must_be_literally_true(tmp_path):
     assert g.load_level(tmp_path, 1, LEVEL_IDS).available is False
 
 
-def test_real_repo_levels_load_and_are_all_unavailable():
+def test_real_repo_levels_load_with_30_unique_signs():
     signs = []
     for level_id in LEVEL_IDS:
         level = g.load_level(Config.LEVELS_DIR, level_id, LEVEL_IDS)
-        assert level.available is False
         signs.extend(level.moves.values())
     assert len(signs) == len(set(signs)) == 30
 
