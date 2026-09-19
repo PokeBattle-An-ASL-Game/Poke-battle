@@ -4,3 +4,4 @@ flask-cors==6.0.5
 werkzeug==3.1.8
 pillow==12.3.0
 numpy==1.26.4
+gunicorn==26.2.0
