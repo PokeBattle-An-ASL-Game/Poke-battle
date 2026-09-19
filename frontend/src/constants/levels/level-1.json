@@ -41,14 +41,16 @@
       "signId": "CITY",
       "difficulty": "easy",
       "damage": 50,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/CITY.png"
     },
     {
       "id": "move-2",
       "signId": "TABLE",
       "difficulty": "medium",
       "damage": 50,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/TABLE.png"
     }
   ],
   "status": "planned-awaiting-ml-and-teaching-review"

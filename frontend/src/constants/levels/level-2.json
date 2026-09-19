@@ -41,14 +41,16 @@
       "signId": "YEAR",
       "difficulty": "easy",
       "damage": 40,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/YEAR.png"
     },
     {
       "id": "move-2",
       "signId": "BIRD",
       "difficulty": "hard",
       "damage": 60,
-      "maxPP": 1
+      "maxPP": 1,
+      "hintImage": "/assets/asl/BIRD.png"
     }
   ],
   "status": "planned-awaiting-ml-and-teaching-review"
