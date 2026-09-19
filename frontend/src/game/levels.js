@@ -48,16 +48,6 @@ const POKEMON_PALETTES = {
   mewtwo: ['#9b7fc9', '#6a4fa3'],
 };
 
-const BLURBS = {
-  1: 'Two signs, fifty damage each. The opening bout — learn the greeting and the yes.',
-  2: 'Three signs of basic courtesy. The counterattack arrives on every second success.',
-  3: 'Four signs for asking and stopping. A full grid with no reserve queue behind it.',
-  4: 'Four signs around food and water. Damage climbs with difficulty, from 15 up to 40.',
-  5: 'Five school signs. One waits in the reserve queue until a slot clears.',
-  6: 'Six family and question signs. Two sit in reserve; counters come every second hit.',
-  7: 'Six feeling signs. The longest level — the queue stays full most of the battle.',
-};
-
 export function palette(levelId) {
   return PALETTES[levelId - 1] || PALETTES[0];
 }
@@ -76,10 +66,6 @@ const SMALL_SPRITE_SCALE = {
 export function spriteScale(level) {
   const key = level.opponentPokemon.species.toLowerCase();
   return SMALL_SPRITE_SCALE[key] || 1;
-}
-
-export function blurb(levelId) {
-  return BLURBS[levelId] || '';
 }
 
 export function levelById(id) {

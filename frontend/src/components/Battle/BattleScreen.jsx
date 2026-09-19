@@ -60,9 +60,10 @@ export default function BattleScreen({ levelId, unlocked, onUnlock, onNextLevel,
           <CaptureOverlay
             state={state}
             selectedWord={selected ? selected.word : ''}
-            onStartRecording={battle.startRecording}
+            onSubmit={battle.submitFrames}
             onCancel={battle.cancelCapture}
-            onSetOutcome={battle.setOutcome}
+            setRecording={battle.setRecording}
+            setFrameProgress={battle.setFrameProgress}
           />
         )}
 

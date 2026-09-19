@@ -1,4 +1,4 @@
-import { blurb, counterEvery, levelById, moveList, opponentImage, opponentName, pokemonPalette, spriteScale } from '../game/levels.js';
+import { levelById, moveList, opponentImage, opponentName, pokemonPalette, spriteScale } from '../game/levels.js';
 
 const TINT = { easy: '#cfe9d6', medium: '#f6e4bb', hard: '#f5d2cd' };
 
@@ -8,12 +8,6 @@ export default function LevelPreviewModal({ levelId, onClose, onStart }) {
   const image = opponentImage(level);
   const scale = spriteScale(level);
   const moves = moveList(level);
-  const stats = [
-    { k: 'SIGNS', v: String(moves.length) },
-    { k: 'TOTAL DAMAGE', v: String(moves.reduce((a, b) => a + b.damage, 0)) },
-    { k: 'PP PER SIGN', v: '1' },
-    { k: 'COUNTER EVERY', v: counterEvery(moves.length) + (counterEvery(moves.length) === 1 ? ' HIT' : ' HITS') },
-  ];
 
   return (
     <div onClick={onClose} style={{ position: 'absolute', inset: 0, zIndex: 9, background: 'rgba(8,16,20,.62)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '96px 20px 24px' }}>
@@ -40,26 +34,13 @@ export default function LevelPreviewModal({ levelId, onClose, onStart }) {
           <button onClick={onClose} style={{ marginLeft: 'auto', flex: 'none', fontFamily: "'Silkscreen',monospace", fontSize: 13, width: 28, height: 28, background: 'rgba(0,0,0,.22)', border: '2px solid rgba(255,255,255,.75)', color: '#fff', cursor: 'pointer' }}>×</button>
         </div>
 
-        <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 12, color: '#2b3a3f' }}>
-          <div style={{ fontFamily: "'IBM Plex Mono',monospace", fontSize: 12.5, lineHeight: 1.5, color: '#3b4d53' }}>{blurb(levelId)}</div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-            <div style={{ fontFamily: "'Silkscreen',monospace", fontSize: 10.5, letterSpacing: '.14em', color: '#6d8087' }}>VOCABULARY</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {moves.map((m) => (
-                <span key={m.id} style={{ fontFamily: "'Silkscreen',monospace", fontSize: 11, padding: '5px 9px', border: '2px solid #2b3a3f', background: TINT[m.difficulty], color: '#1d2a2e' }}>
-                  {m.word} <span style={{ fontFamily: "'IBM Plex Mono',monospace", fontSize: 10, opacity: .72 }}>{m.damage} dmg</span>
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7 }}>
-            {stats.map((st) => (
-              <div key={st.k} style={{ border: '2px solid #cbbda0', background: '#efe3ca', padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <span style={{ fontFamily: "'IBM Plex Mono',monospace", fontSize: 10, letterSpacing: '.1em', color: '#6d8087' }}>{st.k}</span>
-                <span style={{ fontFamily: "'Silkscreen',monospace", fontSize: 14, color: '#2b3a3f' }}>{st.v}</span>
-              </div>
+        <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 9, color: '#2b3a3f' }}>
+          <div style={{ fontFamily: "'Silkscreen',monospace", fontSize: 12, letterSpacing: '.14em', color: '#6d8087' }}>VOCABULARY</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {moves.map((m) => (
+              <span key={m.id} style={{ fontFamily: "'Silkscreen',monospace", fontSize: 16, padding: '8px 12px', border: '2px solid #2b3a3f', background: TINT[m.difficulty], color: '#1d2a2e' }}>
+                {m.word} <span style={{ fontFamily: "'IBM Plex Mono',monospace", fontSize: 13, opacity: .72 }}>{m.damage} dmg</span>
+              </span>
             ))}
           </div>
         </div>

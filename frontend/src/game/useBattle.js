@@ -7,8 +7,18 @@ import {
   moveList,
   opponentName,
 } from './levels.js';
+import { API_BASE_URL } from '../constants/capture.js';
 
 const IDLE_ANIM = 'sb-idle 3.4s ease-in-out infinite';
+const RETRY_NOTES = {
+  BAD_REQUEST: 'The capture could not be read. Try again.',
+  UPLOAD_TOO_LARGE: 'The capture was too large to send. Try again.',
+  LEVEL_UNAVAILABLE: 'This level is not available yet.',
+  SIGN_UNAVAILABLE: 'This sign is not available yet.',
+  MODEL_NOT_READY: 'Recognition is temporarily unavailable.',
+  INFERENCE_UNAVAILABLE: 'Recognition is temporarily unavailable.',
+  NETWORK_ERROR: 'Could not reach the recognition server.',
+};
 
 function initialState(levelId, unlocked) {
   return {
@@ -35,7 +45,6 @@ function initialState(levelId, unlocked) {
     refillSlot: -1,
     frames: 0,
     recording: false,
-    outcome: 'correct',
     log: [],
     cmdIndex: 0,
     menuOpen: true,
@@ -52,7 +61,6 @@ export function useBattle(levelId, unlocked, onUnlock) {
 
   const timers = useRef([]);
   const typer = useRef(null);
-  const recTimer = useRef(null);
 
   const level = levelById(levelId);
   const moves = moveList(level);
@@ -72,7 +80,6 @@ export function useBattle(levelId, unlocked, onUnlock) {
     timers.current.forEach(clearTimeout);
     timers.current = [];
     if (typer.current) { clearInterval(typer.current); typer.current = null; }
-    if (recTimer.current) { clearInterval(recTimer.current); recTimer.current = null; }
   }, []);
 
   const push = useCallback((line) => {
@@ -185,13 +192,13 @@ export function useBattle(levelId, unlocked, onUnlock) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patch, prompt, counterAttack, counterHit, afterCorrect]);
 
-  const resolve = useCallback((result) => {
+  const resolve = useCallback((result, note) => {
     const s = stateRef.current;
     const mv = byId[s.selected];
     if (result === 'retry') {
       patch({ phase: 'RESULT' });
       push('retry — no damage, no PP, no counterattack');
-      say('Signal unclear. Free retry — nothing was spent.', 'prompt');
+      say(note || 'Signal unclear. Free retry — nothing was spent.', 'prompt');
       return;
     }
     if (result === 'incorrect') {
@@ -276,10 +283,8 @@ export function useBattle(levelId, unlocked, onUnlock) {
 
   const pickMove = useCallback((moveId) => {
     if (stateRef.current.phase !== 'CHOOSE_MOVE') return;
-    patch({ selected: moveId, phase: 'CAPTURE', frames: 0, recording: false, requestId: 'req-' + Math.random().toString(36).slice(2, 8) });
+    patch({ selected: moveId, phase: 'CAPTURE', frames: 0, recording: false, requestId: crypto.randomUUID() });
   }, [patch]);
-
-  const setOutcome = useCallback((o) => patch({ outcome: o }), [patch]);
 
   const cancelCapture = useCallback(() => {
     clearTimers();
@@ -287,22 +292,38 @@ export function useBattle(levelId, unlocked, onUnlock) {
     push('capture cancelled — request discarded');
   }, [clearTimers, patch, push]);
 
-  const startRecording = useCallback(() => {
-    if (stateRef.current.recording) return;
-    patch({ recording: true, frames: 0 });
-    let n = 0;
-    recTimer.current = setInterval(() => {
-      n += 1;
-      patch({ frames: n });
-      if (n >= 25) {
-        clearInterval(recTimer.current); recTimer.current = null;
-        patch({ recording: false, phase: 'SUBMITTING' });
-        push('POST /api/validate-sign · 25 frames · ' + stateRef.current.requestId);
-        wait(900, () => resolve(stateRef.current.outcome));
+  const setRecording = useCallback((recording) => patch({ recording, frames: 0 }), [patch]);
+  const setFrameProgress = useCallback((n) => patch({ frames: n }), [patch]);
+
+  const submitFrames = useCallback(async (frameBlobs, timestampsMs) => {
+    const s = stateRef.current;
+    patch({ recording: false, phase: 'SUBMITTING' });
+    push('POST /api/validate-sign · ' + frameBlobs.length + ' frames · ' + s.requestId);
+
+    const form = new FormData();
+    form.append('requestId', s.requestId);
+    form.append('levelId', String(levelId));
+    form.append('moveId', s.selected);
+    form.append('timestampsMs', JSON.stringify(timestampsMs));
+    frameBlobs.forEach((blob, i) => form.append('frames', blob, `frame-${i}.jpg`));
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/validate-sign`, { method: 'POST', body: form });
+      const body = await res.json().catch(() => null);
+      if (res.ok && body?.status) {
+        push('response ' + res.status + ' · ' + body.status);
+        resolve(body.status);
+      } else {
+        const code = body?.error?.code || 'BAD_REQUEST';
+        push('response ' + res.status + ' · ' + code);
+        resolve('retry', RETRY_NOTES[code]);
       }
-    }, 100);
+    } catch {
+      push('network error — request failed');
+      resolve('retry', RETRY_NOTES.NETWORK_ERROR);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [patch, push, wait, resolve]);
+  }, [patch, push, resolve, levelId]);
 
   const restart = useCallback(() => startLevel(stateRef.current.levelId), [startLevel]);
 
@@ -336,7 +357,7 @@ export function useBattle(levelId, unlocked, onUnlock) {
   return {
     state, level, moves, byId,
     chooseFight, chooseRun, backToMenu, openHint, closeHint, setCmdIndex,
-    pickMove, setOutcome, cancelCapture, startRecording,
+    pickMove, cancelCapture, setRecording, setFrameProgress, submitFrames,
     skipLine, restart, startLevel,
   };
 }

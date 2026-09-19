@@ -12,7 +12,7 @@ def test_origins_parsing():
 
 
 def test_limits_match_api_contract():
-    assert Config.FRAME_COUNT == 25
+    assert Config.FRAME_COUNT == 64
     assert Config.MAX_FRAME_BYTES == 200 * 1024
     assert (Config.MAX_FRAME_WIDTH, Config.MAX_FRAME_HEIGHT) == (1280, 720)
     assert Config.MAX_CONTENT_LENGTH == 6 * 1024 * 1024

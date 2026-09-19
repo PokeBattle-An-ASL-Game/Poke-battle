@@ -54,8 +54,9 @@ def game_files(tmp_path):
 def post_attempt(make_jpeg):
     def _post(client, frames=None, **fields):
         data = {"requestId": str(uuid.uuid4()), "levelId": "1", "moveId": "move-1",
-                "timestampsMs": json.dumps([i * 100.0 for i in range(25)]), **fields}
-        frames = frames if frames is not None else [make_jpeg()] * 25
+                # 50ms spacing keeps the span under MAX_SEQUENCE_SPAN_MS even at 64+ frames.
+                "timestampsMs": json.dumps([i * 50.0 for i in range(Config.FRAME_COUNT)]), **fields}
+        frames = frames if frames is not None else [make_jpeg()] * Config.FRAME_COUNT
         data["frames"] = [(io.BytesIO(f), f"f{i}.jpg", "image/jpeg") for i, f in enumerate(frames)]
         return client.post("/api/validate-sign", data=data, content_type="multipart/form-data")
 

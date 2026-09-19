@@ -4,7 +4,7 @@ import tempfile
 import werkzeug.formparser
 
 from app import create_app
-from app.config import REPO_ROOT
+from app.config import Config, REPO_ROOT
 
 ORIGIN = "http://localhost:5173"
 
@@ -16,7 +16,7 @@ def test_uploads_never_spill_to_disk(make_client, post_attempt, make_jpeg, monke
     monkeypatch.setattr(werkzeug.formparser, "SpooledTemporaryFile", no_disk)
     monkeypatch.setattr(tempfile, "TemporaryFile", no_disk)
     oversized_frame = b"\xff\xd8\xff" + b"\0" * 600_000
-    response = post_attempt(make_client(), frames=[oversized_frame] + [make_jpeg()] * 24)
+    response = post_attempt(make_client(), frames=[oversized_frame] + [make_jpeg()] * (Config.FRAME_COUNT - 1))
     assert response.status_code == 413
     assert post_attempt(make_client()).status_code == 200
 
