@@ -87,3 +87,40 @@ def test_pinned_wlasl_source_builds_i3d(tmp_path):
     torch.save(model.state_dict(), tmp_path / "w.pt")
     run = t.load_i3d(tmp_path / "w.pt", 100)
     assert run(np.zeros((1, 3, 16, 224, 224), np.float32)).shape[:2] == (1, 100)
+
+
+@pytest.fixture
+def checkpoint(tmp_path, monkeypatch):
+    path = tmp_path / "FINAL_nslt_100.pt"
+    path.write_bytes(b"pretend checkpoint")
+    monkeypatch.setattr(t, "CHECKPOINT_SHA256", hashlib.sha256(b"pretend checkpoint").hexdigest())
+    return path
+
+
+def test_install_checkpoint_copies_verified_file(tmp_path, checkpoint):
+    target = t.install_checkpoint(checkpoint, tmp_path / "model")
+    assert target == tmp_path / "model" / "wlasl100_i3d.pt"
+    assert target.read_bytes() == b"pretend checkpoint"
+    assert list(target.parent.iterdir()) == [target]
+
+
+def test_install_checkpoint_keeps_existing_valid_file(tmp_path, checkpoint):
+    target = t.install_checkpoint(checkpoint, tmp_path / "model")
+    checkpoint.unlink()
+    assert t.install_checkpoint(checkpoint, tmp_path / "model") == target
+
+
+def test_install_checkpoint_rejects_other_file(tmp_path, checkpoint):
+    checkpoint.write_bytes(b"some other model")
+    with pytest.raises(t.ModelFileError, match="checksum"):
+        t.install_checkpoint(checkpoint, tmp_path / "model")
+    assert list((tmp_path / "model").iterdir()) == []
+
+
+def test_install_checkpoint_missing_source(tmp_path, checkpoint):
+    with pytest.raises(t.ModelFileError, match="copy failed"):
+        t.install_checkpoint(tmp_path / "nope.pt", tmp_path / "model")
+
+
+def test_pinned_checkpoint_checksum_is_trial_checkpoint():
+    assert t.CHECKPOINT_SHA256 == "a61d7dda5f875ce5ebd9d407c56874f77d1cd2aeb4bc7cd0d98a6e1ca4669a0c"

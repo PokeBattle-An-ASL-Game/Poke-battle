@@ -1,5 +1,7 @@
 import importlib.util
 import pickle
+import shutil
+import sys
 import urllib.request
 from pathlib import Path
 from typing import Callable
@@ -7,8 +9,8 @@ from typing import Callable
 import numpy as np
 import torch
 
-from ..config import REPO_ROOT
-from .download import fetch_verified
+from ..config import REPO_ROOT, Config
+from .download import ModelFileError, fetch_verified
 from .manifest import sha256_file
 from .recognizer import ModelNotReady
 
@@ -19,10 +21,30 @@ I3D_SOURCE_URL = (
 I3D_SOURCE_SHA256 = "1b35b81b4dc8ea6ef55c87063515d058761fd25caf9381bad3dcc0ed5f3c3de5"
 I3D_SOURCE_PATH = REPO_ROOT / "backend/app/ml/artifacts/wlasl/pytorch_i3d.py"
 PRETRAINED_CLASSES = 400
+CHECKPOINT_NAME = "wlasl100_i3d.pt"
+CHECKPOINT_SHA256 = "a61d7dda5f875ce5ebd9d407c56874f77d1cd2aeb4bc7cd0d98a6e1ca4669a0c"
 
 
 def ensure_i3d_source(path: Path = I3D_SOURCE_PATH, opener=urllib.request.urlopen) -> Path:
     return fetch_verified(path, I3D_SOURCE_URL, I3D_SOURCE_SHA256, opener)
+
+
+def install_checkpoint(source: Path, model_dir: Path = Config.MODEL_DIR) -> Path:
+    target = Path(model_dir) / CHECKPOINT_NAME
+    if target.is_file() and sha256_file(target) == CHECKPOINT_SHA256:
+        return target
+    target.parent.mkdir(parents=True, exist_ok=True)
+    partial = target.with_suffix(".part")
+    try:
+        shutil.copyfile(source, partial)
+        if sha256_file(partial) != CHECKPOINT_SHA256:
+            raise ModelFileError("checkpoint checksum mismatch; expected the WLASL100 I3D trial checkpoint")
+        partial.replace(target)
+    except OSError as error:
+        raise ModelFileError(f"checkpoint copy failed: {error}") from None
+    finally:
+        partial.unlink(missing_ok=True)
+    return target
 
 
 def _i3d_class(source_path: Path):
@@ -53,3 +75,5 @@ def load_i3d(weights_path: Path, num_classes: int, source_path: Path = I3D_SOURC
 
 if __name__ == "__main__":
     print(ensure_i3d_source())
+    if len(sys.argv) > 1:
+        print(install_checkpoint(Path(sys.argv[1])))
