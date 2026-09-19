@@ -37,12 +37,16 @@ function PokeballSpinner() {
   );
 }
 
+const COUNTDOWN_START = 3;
+const COUNTDOWN_STEP_MS = 700;
+
 export default function CaptureOverlay({ state, selectedWord, onSubmit, onCancel, setRecording, setFrameProgress }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState('');
+  const [countdown, setCountdown] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,6 +64,25 @@ export default function CaptureOverlay({ state, selectedWord, onSubmit, onCancel
       streamRef.current = null;
     };
   }, []);
+
+  // Auto-starts a 3-2-1 countdown as soon as the camera is ready — no manual
+  // record button; a failed camera still needs a way out, so that keeps CANCEL.
+  useEffect(() => {
+    if (!cameraReady || state.phase !== 'CAPTURE' || state.recording || countdown !== null) return;
+    setCountdown(COUNTDOWN_START);
+  }, [cameraReady, state.phase, state.recording, countdown]);
+
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown === 0) {
+      setCountdown(null);
+      handleRecord();
+      return;
+    }
+    const t = setTimeout(() => setCountdown((c) => c - 1), COUNTDOWN_STEP_MS);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countdown]);
 
   const handleRecord = async () => {
     if (!cameraReady || !videoRef.current || !canvasRef.current) return;
@@ -81,8 +104,9 @@ export default function CaptureOverlay({ state, selectedWord, onSubmit, onCancel
   const framePct = Math.min(100, (state.frames / FRAME_COUNT) * 100);
   const isLoading = state.phase === 'SUBMITTING';
   const captureLabel = isLoading ? 'CATCHING YOUR SIGN…' : Math.round(framePct) + '%';
-  const canRecord = state.phase === 'CAPTURE' && !state.recording && cameraReady;
-  const canCancel = state.phase === 'CAPTURE' && !state.recording;
+  // No manual record button — recording starts itself once the countdown hits
+  // zero. A failed camera can't count down, so CANCEL stays as the way out.
+  const canCancel = state.phase === 'CAPTURE' && !state.recording && !!cameraError;
 
   return (
     <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,16,20,.9)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.6cqw', padding: '3%' }}>
@@ -100,6 +124,11 @@ export default function CaptureOverlay({ state, selectedWord, onSubmit, onCancel
         {state.recording && (
           <span style={{ position: 'absolute', top: '6%', left: '6%', fontSize: '1.6cqw', color: '#e35d4f', animation: 'sb-rec 1s steps(1) infinite' }}>● REC</span>
         )}
+        {countdown !== null && countdown > 0 && (
+          <div key={countdown} style={{ position: 'absolute', inset: 0, background: 'rgba(8,16,20,.45)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontFamily: "'Silkscreen',monospace", fontSize: '9cqw', color: '#f4ead6', textShadow: '0 4px 0 rgba(0,0,0,.4)', animation: 'sb-countdown-pulse .7s ease-out' }}>{countdown}</span>
+          </div>
+        )}
         {isLoading && (
           <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,16,20,.95)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1cqw' }}>
             <PokeballSpinner />
@@ -115,14 +144,9 @@ export default function CaptureOverlay({ state, selectedWord, onSubmit, onCancel
           <div style={{ fontSize: '1.5cqw', color: '#8fa1a8', fontFamily: "'IBM Plex Mono',monospace" }}>{captureLabel}</div>
         </>
       )}
-      <div style={{ display: 'flex', gap: '1.2cqw', alignItems: 'center' }}>
-        {canRecord && (
-          <button onClick={handleRecord} style={{ fontFamily: "'Silkscreen',monospace", fontSize: '1.9cqw', padding: '1.2cqw 2.4cqw', background: '#e0a13b', border: 'none', color: '#151f24', cursor: 'pointer' }}>RECORD</button>
-        )}
-        {canCancel && (
-          <button onClick={onCancel} style={{ fontFamily: "'Silkscreen',monospace", fontSize: '1.9cqw', padding: '1.2cqw 2.4cqw', background: 'transparent', border: '1px solid #3f565f', color: '#9fb3ba', cursor: 'pointer' }}>CANCEL</button>
-        )}
-      </div>
+      {canCancel && (
+        <button onClick={onCancel} style={{ fontFamily: "'Silkscreen',monospace", fontSize: '1.9cqw', padding: '1.2cqw 2.4cqw', background: 'transparent', border: '1px solid #3f565f', color: '#9fb3ba', cursor: 'pointer' }}>CANCEL</button>
+      )}
     </div>
   );
 }

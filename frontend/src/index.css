@@ -110,6 +110,11 @@ button {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+@keyframes sb-countdown-pulse {
+  0% { transform: scale(1.6); opacity: 0; }
+  30% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .001ms !important; }

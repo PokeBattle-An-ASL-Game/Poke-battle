@@ -26,10 +26,14 @@ export default function App() {
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
+  // Replays the title/pokemon reveal animation every time the select screen
+  // becomes active again — not just on the app's first mount.
   useEffect(() => {
+    if (route.screen !== 'SELECT') return;
+    setIntro(true);
     const t = setTimeout(() => setIntro(false), 2050);
     return () => clearTimeout(t);
-  }, []);
+  }, [route.screen]);
 
   const goBattle = useCallback((id) => {
     try { history.pushState(null, '', '#battle-' + id); } catch (e) { /* ignore */ }
@@ -53,10 +57,24 @@ export default function App() {
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden', background: '#0c1216' }}>
-      <header style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 6, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '8px 16px', background: 'linear-gradient(rgba(8,16,20,.78),rgba(8,16,20,0))', pointerEvents: 'none' }}>
+      <header style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 6, display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, padding: '22px 24px 8px', background: 'linear-gradient(rgba(8,16,20,.55),rgba(8,16,20,0))', pointerEvents: 'none' }}>
         <div />
         <div style={{ display: 'flex', gap: 8, pointerEvents: 'auto' }}>
-          <button onClick={goSelect} style={{ fontFamily: "'Silkscreen',monospace", fontSize: 11, padding: '6px 11px', background: 'rgba(22,35,42,.85)', color: '#cfe0e4', border: '1px solid #2f4149', cursor: 'pointer' }}>LEVELS</button>
+          <button
+            onClick={goSelect}
+            onMouseDown={(e) => { e.currentTarget.style.transform = 'translate(3px,3px)'; e.currentTarget.style.boxShadow = '0 0 0 0 #2b3a3f'; }}
+            onMouseUp={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '3px 3px 0 0 #2b3a3f'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '3px 3px 0 0 #2b3a3f'; }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              fontFamily: "'Silkscreen',monospace", fontSize: 12, letterSpacing: '.06em',
+              padding: '9px 16px', background: '#f4ead6', color: '#2b3a3f',
+              border: '2px solid #2b3a3f', boxShadow: '3px 3px 0 0 #2b3a3f',
+              cursor: 'pointer', transition: 'transform .05s ease-out, box-shadow .05s ease-out',
+            }}
+          >
+            {isBattle ? <><span aria-hidden="true">◀</span> BACK</> : 'LEVELS'}
+          </button>
         </div>
       </header>
 

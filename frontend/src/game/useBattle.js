@@ -196,8 +196,8 @@ export function useBattle(levelId, onUnlock) {
     const mv = byId[s.selected];
     if (result === 'retry') {
       patch({ phase: 'RESULT' });
-      push('retry — no damage, no PP, no counterattack');
-      say(note || 'Signal unclear. Free retry — nothing was spent.', 'prompt');
+      push('retry — ' + (note || 'signal unclear') + ' — opponent counterattacks');
+      say('Signal unclear — attack missed!', 'counterForced');
       return;
     }
     if (result === 'incorrect') {
