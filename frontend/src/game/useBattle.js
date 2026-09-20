@@ -8,6 +8,8 @@ import {
   opponentName,
 } from './levels.js';
 import { API_BASE_URL } from '../constants/capture.js';
+import { WILD_BATTLE_TRACK, TRAINER_DEFEATED_TRACK } from '../constants/audio.js';
+import { playMusic } from './audioManager.js';
 
 const IDLE_ANIM = 'sb-idle 3.4s ease-in-out infinite';
 const RETRY_NOTES = {
@@ -162,6 +164,7 @@ export function useBattle(levelId, onUnlock) {
     const nextId = Math.min(7, s.levelId + 1);
     if (nextId !== s.levelId) onUnlock(nextId);
     patch({ phase: 'VICTORY', oppAnim: 'sb-faint .7s ease-in forwards' });
+    playMusic(TRAINER_DEFEATED_TRACK, { loop: false });
     push('victory — all unique signs completed');
     say(opponentName(level) + ' was defeated!');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -236,6 +239,7 @@ export function useBattle(levelId, onUnlock) {
 
   const startLevel = useCallback((id) => {
     clearTimers();
+    playMusic(WILD_BATTLE_TRACK);
     const mv = moveList(levelById(id));
     const ids = mv.map((m) => m.id);
     patch((s) => ({

@@ -1,113 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
-import LevelSelect from './components/LevelSelect/LevelSelect.jsx';
-import LevelPreviewModal from './components/LevelPreviewModal.jsx';
-import BattleScreen from './components/Battle/BattleScreen.jsx';
-import { isLevelAvailable, levelById, unlockLevel } from './game/levels.js';
-
-function routeFromHash() {
-  const m = /^#battle-(\d+)$/.exec(location.hash || '');
-  const levelId = m ? +m[1] : null;
-  const level = levelId ? levelById(levelId) : null;
-  return level && isLevelAvailable(level)
-    ? { screen: 'BATTLE', levelId }
-    : { screen: 'SELECT', levelId: null };
-}
+import { Navigate, Route, Routes } from 'react-router-dom';
+import Layout from './pages/Layout.jsx';
+import SelectPage from './pages/SelectPage.jsx';
+import BattlePage from './pages/BattlePage.jsx';
 
 export default function App() {
-  const [route, setRoute] = useState(routeFromHash);
-  const [previewId, setPreviewId] = useState(null);
-  const [intro, setIntro] = useState(true);
-  // Bumped after unlockLevel() mutates LEVELS in place, so LevelSelect/BattleScreen re-render.
-  const [, bumpLevels] = useState(0);
-
-  useEffect(() => {
-    const onPopState = () => setRoute(routeFromHash());
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-  }, []);
-
-  // Replays the title/pokemon reveal animation every time the select screen
-  // becomes active again — not just on the app's first mount.
-  useEffect(() => {
-    if (route.screen !== 'SELECT') return;
-    setIntro(true);
-    const t = setTimeout(() => setIntro(false), 2050);
-    return () => clearTimeout(t);
-  }, [route.screen]);
-
-  const goBattle = useCallback((id) => {
-    try { history.pushState(null, '', '#battle-' + id); } catch (e) { /* ignore */ }
-    setRoute({ screen: 'BATTLE', levelId: id });
-    setPreviewId(null);
-  }, []);
-
-  const goSelect = useCallback(() => {
-    try { history.pushState(null, '', '#levels'); } catch (e) { /* ignore */ }
-    setRoute({ screen: 'SELECT', levelId: null });
-    setPreviewId(null);
-  }, []);
-
-  const onUnlock = useCallback((id) => {
-    unlockLevel(id);
-    bumpLevels((v) => v + 1);
-  }, []);
-
-  const isSelect = route.screen === 'SELECT';
-  const isBattle = route.screen === 'BATTLE';
-
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden', background: '#0c1216' }}>
-      <header style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 6, display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, padding: '22px 24px 8px', background: 'linear-gradient(rgba(8,16,20,.55),rgba(8,16,20,0))', pointerEvents: 'none' }}>
-        <div />
-        <div style={{ display: 'flex', gap: 8, pointerEvents: 'auto' }}>
-          <button
-            onClick={goSelect}
-            onMouseDown={(e) => { e.currentTarget.style.transform = 'translate(3px,3px)'; e.currentTarget.style.boxShadow = '0 0 0 0 #2b3a3f'; }}
-            onMouseUp={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '3px 3px 0 0 #2b3a3f'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '3px 3px 0 0 #2b3a3f'; }}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              fontFamily: "'Silkscreen',monospace", fontSize: 12, letterSpacing: '.06em',
-              padding: '9px 16px', background: '#f4ead6', color: '#2b3a3f',
-              border: '2px solid #2b3a3f', boxShadow: '3px 3px 0 0 #2b3a3f',
-              cursor: 'pointer', transition: 'transform .05s ease-out, box-shadow .05s ease-out',
-            }}
-          >
-            {isBattle ? <><span aria-hidden="true">◀</span> BACK</> : 'LEVELS'}
-          </button>
-        </div>
-      </header>
-
-      {isSelect && (
-        <div style={{ position: 'absolute', left: '50%', top: '50%', zIndex: 8, pointerEvents: 'none', fontFamily: "'Silkscreen',monospace", fontSize: 76, letterSpacing: '.08em', color: '#f4ead6', whiteSpace: 'nowrap', textShadow: '0 5px 0 rgba(0,0,0,.35)', animation: 'sb-title 2s cubic-bezier(.6,0,.2,1) forwards' }}>
-          Pookié <span style={{ color: '#e0a13b' }}>BATTLE</span>
-        </div>
-      )}
-
-      {isSelect && (
-        <LevelSelect intro={intro} onOpenPreview={setPreviewId} />
-      )}
-
-      {previewId && isSelect && (
-        <LevelPreviewModal levelId={previewId} onClose={() => setPreviewId(null)} onStart={goBattle} />
-      )}
-
-      {isBattle && (
-        <BattleScreen
-          key={route.levelId}
-          levelId={route.levelId}
-          onUnlock={onUnlock}
-          onNextLevel={goBattle}
-          onGoSelect={goSelect}
-        />
-      )}
-
-      {isSelect && (
-        <footer style={{ position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 6, padding: '8px 20px', fontSize: 12, color: '#cfe0e4', background: 'rgba(8,16,20,.62)', textShadow: '0 1px 3px rgba(0,0,0,.8)', pointerEvents: 'none' }}>
-          Learn one sign, land one hit. Thirty signs is enough to greet someone, ask a question and say thank you — practice them until they are yours.<br />
-          <span style={{ color: '#e0a13b' }}>Made for HopHacks 2026 — built by Rohith, Subikisha and Priyanka.</span>
-        </footer>
-      )}
-    </div>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<SelectPage />} />
+        <Route path="/pokemon/:levelId" element={<BattlePage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
   );
 }

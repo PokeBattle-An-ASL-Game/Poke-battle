@@ -38,19 +38,27 @@
   "moves": [
     {
       "id": "move-1",
-      "signId": "YEAR",
+      "signId": "CITY",
       "difficulty": "easy",
-      "damage": 40,
+      "damage": 30,
       "maxPP": 1,
-      "hintImage": "/assets/asl/YEAR.png"
+      "hintImage": "/assets/asl/CITY.png"
     },
     {
       "id": "move-2",
-      "signId": "BIRD",
-      "difficulty": "hard",
-      "damage": 60,
+      "signId": "TABLE",
+      "difficulty": "medium",
+      "damage": 30,
       "maxPP": 1,
-      "hintImage": "/assets/asl/BIRD.png"
+      "hintImage": "/assets/asl/TABLE.png"
+    },
+    {
+      "id": "move-3",
+      "signId": "BED",
+      "difficulty": "hard",
+      "damage": 40,
+      "maxPP": 1,
+      "hintImage": "/assets/asl/BED.png"
     }
   ],
   "status": "planned-awaiting-ml-and-teaching-review"
