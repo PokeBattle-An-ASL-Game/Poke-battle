@@ -95,6 +95,41 @@ def test_decide_uses_custom_thresholds():
     assert prediction.label == "CITY"
 
 
+def test_decide_weak_matching_top1_is_accepted_when_expected():
+    # Margin 2.5 < default 3.0 and/or low prob — still correct if top-1 == expected.
+    weak = logits({3: 10.0, 7: 7.5})
+    prediction = w.decide(weak, CLASSES, "v1", expected_sign="CITY")
+    assert prediction.label == "CITY" and prediction.reason is None
+    assert prediction.score is not None
+
+
+def test_decide_strong_different_top1_is_not_correct_for_expected():
+    # Strong TABLE prediction while expecting CITY → label TABLE (route marks incorrect).
+    strong_wrong = logits({7: 12.0, 3: 1.0})
+    prediction = w.decide(strong_wrong, CLASSES, "v1", expected_sign="CITY")
+    assert prediction.label == "TABLE" and prediction.reason is None
+    assert prediction.score is not None and prediction.score >= 0.25
+
+
+def test_decide_unmapped_top1_is_rejected():
+    prediction = w.decide(logits({50: 12.0, 3: 1.0}), CLASSES, "v1", expected_sign="CITY")
+    assert prediction.label is None and prediction.reason == "uncertain_prediction"
+
+
+def test_decide_normal_correct_and_incorrect_without_expected():
+    correct = w.decide(logits({3: 10.0, 7: 2.0}), CLASSES, "v1")
+    assert correct.label == "CITY" and correct.reason is None
+    # Without expected_sign, a confident TABLE is still returned as TABLE.
+    other = w.decide(logits({7: 10.0, 3: 2.0}), CLASSES, "v1")
+    assert other.label == "TABLE" and other.reason is None
+
+
+def test_decide_weak_different_top1_retries():
+    weak_wrong = logits({7: 10.0, 3: 7.5})
+    prediction = w.decide(weak_wrong, CLASSES, "v1", expected_sign="CITY")
+    assert prediction.label is None and prediction.reason == "uncertain_prediction"
+
+
 def test_recognizer_takes_max_logit_over_time():
     seen = []
 

@@ -146,20 +146,12 @@
       "status": "provisional-awaiting-webcam-validation"
     },
     {
-      "id": "DRINK",
-      "displayText": "DRINK",
-      "modelLabel": "drink",
-      "referenceVideo": null,
-      "approvedTeachingNotes": null,
-      "status": "planned-awaiting-ml-and-teaching-review"
-    },
-    {
       "id": "BUT",
       "displayText": "BUT",
       "modelLabel": "but",
       "referenceVideo": null,
       "approvedTeachingNotes": null,
-      "status": "planned-awaiting-ml-and-teaching-review"
+      "status": "provisional-awaiting-webcam-validation"
     }
   ]
 }
