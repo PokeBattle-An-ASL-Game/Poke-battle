@@ -1,4 +1,4 @@
-# PookieBattle
+# PokeBattle
 
 A Pokémon-style battle game where players attack by performing American Sign Language (ASL) words in front of their webcam.
 
@@ -37,7 +37,7 @@ git clone https://github.com/RohithNair27/Poke-battle.git
 cd Poke-battle
 ```
 
-(The repository will be renamed to `pookie-battle`; update the URL above once that rename happens on GitHub.)
+(The repository will be renamed to `Poke-battle`; update the URL above once that rename happens on GitHub.)
 
 To check that the level JSON files parse:
 
@@ -56,7 +56,7 @@ npm run dev      # serves http://localhost:5173
 npm run build    # production build into frontend/dist
 ```
 
-The battle screen's sign-capture step records real webcam frames (`frontend/src/constants/capture.js`'s `FRAME_COUNT`, 64 by default — must match the backend's `POOKIE_FRAME_COUNT`) and posts them to `POST /api/validate-sign` at `VITE_API_BASE_URL` (defaults to `http://localhost:5001`).
+The battle screen's sign-capture step records real webcam frames (`frontend/src/constants/capture.js`'s `FRAME_COUNT`, 64 by default — must match the backend's `Poke_FRAME_COUNT`) and posts them to `POST /api/validate-sign` at `VITE_API_BASE_URL` (defaults to `http://localhost:5001`).
 
 ### Backend (Flask API + shared feature extractor)
 
@@ -72,7 +72,7 @@ python3.12 -m venv .venv
 For production use gunicorn instead of the Flask dev server (no access log, so client IPs are never logged; uploads stay in memory):
 
 ```bash
-POOKIE_BIND=127.0.0.1:8000 POOKIE_CORS_ORIGINS=https://your-frontend.example .venv/bin/gunicorn -c gunicorn_config.py wsgi:app
+Poke_BIND=127.0.0.1:8000 Poke_CORS_ORIGINS=https://your-frontend.example .venv/bin/gunicorn -c gunicorn_config.py wsgi:app
 ```
 
 #### WLASL I3D model (non-commercial only)
@@ -91,16 +91,16 @@ Environment variables (all optional):
 
 | Variable | Default |
 | --- | --- |
-| `POOKIE_CORS_ORIGINS` | `http://localhost:5173,http://localhost:5174` (comma-separated) |
-| `POOKIE_MODEL_DIR` | `backend/app/ml/artifacts` |
-| `POOKIE_LEVELS_DIR` | `frontend/src/constants/levels` |
-| `POOKIE_FRAME_COUNT` | `64` (frames per `POST /api/validate-sign` attempt; must match the frontend capture count and the WLASL manifest's `frameCount`) |
-| `POOKIE_SIGNS_PATH` | `shared/signs.json` |
+| `Poke_CORS_ORIGINS` | `http://localhost:5173,http://localhost:5174` (comma-separated) |
+| `Poke_MODEL_DIR` | `backend/app/ml/artifacts` |
+| `Poke_LEVELS_DIR` | `frontend/src/constants/levels` |
+| `Poke_FRAME_COUNT` | `64` (frames per `POST /api/validate-sign` attempt; must match the frontend capture count and the WLASL manifest's `frameCount`) |
+| `Poke_SIGNS_PATH` | `shared/signs.json` |
 
 Every possible API response is listed in `shared/api-examples/responses.json`; a backend test keeps it identical to what the server actually returns, so frontend mocks can use it directly.
 
 ## Contributing rules
 
 - Don't commit `.env` files, API keys, datasets, videos, extracted features or model weights (see `.gitignore`).
-- Only level 1 is unlocked by default; later levels unlock as the player clears their way up, tracked in `localStorage` (`pookie.levels`), seeded from `levels.json` on first load. The game uses **18 unique WLASL signs** across **29 move slots** (signs may repeat across levels, not within one level). The registry/manifest also include **BUT** (19 signs total). The server only judges a sign that has a `modelLabel` in `shared/signs.json` and is in the model's `qualifiedLabels`; otherwise it answers `422 SIGN_UNAVAILABLE`. Vocabulary and thresholds remain provisional until webcam validation is complete. Don't add a sign to `qualifiedLabels` until it has reviewed teaching material, confirmed usage rights and measured model support.
+- Only level 1 is unlocked by default; later levels unlock as the player clears their way up, tracked in `localStorage` (`Poke.levels`), seeded from `levels.json` on first load. The game uses **18 unique WLASL signs** across **29 move slots** (signs may repeat across levels, not within one level). The registry/manifest also include **BUT** (19 signs total). The server only judges a sign that has a `modelLabel` in `shared/signs.json` and is in the model's `qualifiedLabels`; otherwise it answers `422 SIGN_UNAVAILABLE`. Vocabulary and thresholds remain provisional until webcam validation is complete. Don't add a sign to `qualifiedLabels` until it has reviewed teaching material, confirmed usage rights and measured model support.
 - Don't present mock or simulated recognition as a working ASL model.
