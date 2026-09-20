@@ -110,7 +110,7 @@ def test_install_checkpoint_copies_verified_file(tmp_path, checkpoint):
     assert data["weightsFile"] == "wlasl100_i3d.pt"
     assert data["weightsSha256"] == t.CHECKPOINT_SHA256
     assert data["modelVersion"] == "wlasl100-i3d-provisional-v1"
-    assert len(data["labels"]) == 19 and data["labels"] == data["qualifiedLabels"]
+    assert len(data["labels"]) == 20 and data["labels"] == data["qualifiedLabels"]
 
 
 def test_install_checkpoint_keeps_existing_valid_file(tmp_path, checkpoint):

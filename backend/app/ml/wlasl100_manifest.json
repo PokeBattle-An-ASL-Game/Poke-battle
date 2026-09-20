@@ -26,7 +26,8 @@
     "COMPUTER",
     "FINISH",
     "BLACK",
-    "BUT"
+    "BUT",
+    "DRINK"
   ],
   "qualifiedLabels": [
     "CITY",
@@ -47,7 +48,8 @@
     "COMPUTER",
     "FINISH",
     "BLACK",
-    "BUT"
+    "BUT",
+    "DRINK"
   ],
   "classMap": {
     "82": "CITY",
@@ -68,7 +70,8 @@
     "2": "COMPUTER",
     "21": "FINISH",
     "19": "BLACK",
-    "80": "BUT"
+    "80": "BUT",
+    "1": "DRINK"
   },
   "weightsFile": "wlasl100_i3d.pt",
   "weightsSha256": "a61d7dda5f875ce5ebd9d407c56874f77d1cd2aeb4bc7cd0d98a6e1ca4669a0c"

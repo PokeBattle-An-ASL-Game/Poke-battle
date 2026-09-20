@@ -152,6 +152,14 @@
       "referenceVideo": null,
       "approvedTeachingNotes": null,
       "status": "provisional-awaiting-webcam-validation"
+    },
+    {
+      "id": "DRINK",
+      "displayText": "DRINK",
+      "modelLabel": "drink",
+      "referenceVideo": null,
+      "approvedTeachingNotes": null,
+      "status": "provisional-awaiting-webcam-validation"
     }
   ]
 }

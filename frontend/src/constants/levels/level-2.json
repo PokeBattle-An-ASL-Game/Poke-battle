@@ -40,7 +40,7 @@
       "id": "move-1",
       "signId": "CITY",
       "difficulty": "easy",
-      "damage": 30,
+      "damage": 20,
       "maxPP": 1,
       "hintImage": "/assets/asl/CITY.png"
     },
@@ -48,7 +48,7 @@
       "id": "move-2",
       "signId": "TABLE",
       "difficulty": "medium",
-      "damage": 30,
+      "damage": 25,
       "maxPP": 1,
       "hintImage": "/assets/asl/TABLE.png"
     },
@@ -56,9 +56,17 @@
       "id": "move-3",
       "signId": "BED",
       "difficulty": "hard",
-      "damage": 40,
+      "damage": 25,
       "maxPP": 1,
       "hintImage": "/assets/asl/BED.png"
+    },
+    {
+      "id": "move-4",
+      "signId": "DRINK",
+      "difficulty": "hard",
+      "damage": 30,
+      "maxPP": 1,
+      "hintImage": null
     }
   ],
   "status": "planned-awaiting-ml-and-teaching-review"

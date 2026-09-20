@@ -81,7 +81,7 @@ def test_available_must_be_literally_true(tmp_path):
     assert g.load_level(tmp_path, 1, LEVEL_IDS).available is False
 
 
-def test_real_repo_levels_have_29_slots_and_18_unique_signs():
+def test_real_repo_levels_have_30_slots_and_20_unique_signs():
     signs = []
     for level_id in LEVEL_IDS:
         level = g.load_level(Config.LEVELS_DIR, level_id, LEVEL_IDS)
@@ -89,15 +89,15 @@ def test_real_repo_levels_have_29_slots_and_18_unique_signs():
         assert len(level_signs) == len(set(level_signs))
         assert level.available is True
         signs.extend(level_signs)
-    assert len(signs) == 29
-    assert len(set(signs)) == 18
+    assert len(signs) == 30
+    assert len(set(signs)) == 20
     registry = g.load_sign_registry(Config.SIGNS_PATH)
     assert set(signs) <= set(registry)
 
 
 def test_real_sign_registry():
     registry = g.load_sign_registry(Config.SIGNS_PATH)
-    assert len(registry) == 19
+    assert len(registry) == 20
     assert "HELLO" not in registry and "CITY" in registry
     assert "BUT" in registry and "WORK" not in registry
     assert all(isinstance(label, str) and label for label in registry.values())

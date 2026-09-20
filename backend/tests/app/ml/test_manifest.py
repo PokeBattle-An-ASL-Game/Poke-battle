@@ -30,6 +30,7 @@ EXPECTED_CLASS_MAP = {
     "21": "FINISH",
     "19": "BLACK",
     "80": "BUT",
+    "1": "DRINK",
 }
 
 
