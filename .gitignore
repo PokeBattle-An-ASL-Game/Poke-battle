@@ -58,13 +58,5 @@ npm-debug.log*
 .vscode/
 .idea/
 # Reviewed, explicitly licensed tutorial clips may be tracked intentionally
-!frontend/public/assets/asl/*.mp4
-!frontend/public/assets/asl/*.webm
 
-# Supplied opponent PNGs are NOT approved for a public repository yet.
-frontend/public/assets/pokemon/*.png
-# Static generated narration requires verified provider/voice redistribution rights.
-frontend/public/assets/audio/*.mp3
-frontend/public/assets/audio/*.wav
-frontend/public/assets/audio/*.ogg
 *.task

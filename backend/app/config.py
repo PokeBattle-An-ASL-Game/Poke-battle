@@ -12,7 +12,9 @@ class Config:
     LEVELS_DIR = Path(os.environ.get("POOKIE_LEVELS_DIR", REPO_ROOT / "frontend/src/constants/levels"))
     SIGNS_PATH = Path(os.environ.get("POOKIE_SIGNS_PATH", REPO_ROOT / "shared/signs.json"))
     MODEL_DIR = Path(os.environ.get("POOKIE_MODEL_DIR", REPO_ROOT / "backend/app/ml/artifacts"))
-    CORS_ORIGINS = _origins(os.environ.get("POOKIE_CORS_ORIGINS", "http://localhost:5173"))
+    CORS_ORIGINS = _origins(
+        os.environ.get("POOKIE_CORS_ORIGINS", "http://localhost:5173,http://localhost:5174")
+    )
 
     LEVEL_IDS = range(1, 8)
     # Priyanka's 25 vs 48 vs 64 comparison on the WLASL model favored 64 (near real-time

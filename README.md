@@ -91,7 +91,7 @@ Environment variables (all optional):
 
 | Variable | Default |
 | --- | --- |
-| `POOKIE_CORS_ORIGINS` | `http://localhost:5173` (comma-separated) |
+| `POOKIE_CORS_ORIGINS` | `http://localhost:5173,http://localhost:5174` (comma-separated) |
 | `POOKIE_MODEL_DIR` | `backend/app/ml/artifacts` |
 | `POOKIE_LEVELS_DIR` | `frontend/src/constants/levels` |
 | `POOKIE_FRAME_COUNT` | `64` (frames per `POST /api/validate-sign` attempt; must match the frontend capture count and the WLASL manifest's `frameCount`) |

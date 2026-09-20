@@ -54,11 +54,11 @@
     },
     {
       "id": "move-3",
-      "signId": "DRINK",
+      "signId": "FISH",
       "difficulty": "hard",
       "damage": 40,
       "maxPP": 1,
-      "hintImage": "/assets/asl/DRINK.png"
+      "hintImage": "/assets/asl/FISH.png"
     }
   ],
   "status": "planned-awaiting-ml-and-teaching-review"
