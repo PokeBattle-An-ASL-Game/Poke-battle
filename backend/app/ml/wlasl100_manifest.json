@@ -25,7 +25,8 @@
     "TELL",
     "COMPUTER",
     "FINISH",
-    "BLACK"
+    "BLACK",
+    "BUT"
   ],
   "qualifiedLabels": [
     "CITY",
@@ -45,7 +46,8 @@
     "TELL",
     "COMPUTER",
     "FINISH",
-    "BLACK"
+    "BLACK",
+    "BUT"
   ],
   "classMap": {
     "82": "CITY",
@@ -65,7 +67,8 @@
     "98": "TELL",
     "2": "COMPUTER",
     "21": "FINISH",
-    "19": "BLACK"
+    "19": "BLACK",
+    "80": "BUT"
   },
   "weightsFile": "wlasl100_i3d.pt",
   "weightsSha256": "a61d7dda5f875ce5ebd9d407c56874f77d1cd2aeb4bc7cd0d98a6e1ca4669a0c"

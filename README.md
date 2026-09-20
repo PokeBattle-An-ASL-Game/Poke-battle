@@ -21,7 +21,7 @@ The backend never stores HP, PP, moves, progress, camera images or landmarks. Th
   - A sign may repeat across different levels, but never twice within the same level.
   - Every move has `maxPP: 1`; move damage in each level sums to the opponent's 100 HP.
   - Opponent attacks deal 10 HP.
-- `shared/signs.json` — exactly **18** sign IDs with non-null `modelLabel` values matching lowercase WLASL100 glosses. The vocabulary and acceptance thresholds are **provisional** and have not yet been fully webcam-validated.
+- `shared/signs.json` — **19** sign IDs with non-null `modelLabel` values matching lowercase WLASL100 glosses (the 18 level signs plus **BUT**). The vocabulary and acceptance thresholds are **provisional** and have not yet been fully webcam-validated.
 - `shared/voice-lines.json` — draft narration text (no audio generated yet).
 
 ## Assets
@@ -83,7 +83,7 @@ The backend can run the pretrained WLASL100 I3D video model. **The WLASL dataset
 .venv/bin/python -m app.ml.wlasl_torch /path/to/FINAL_nslt_100_iters=896_top1=65.89_top5=84.11_top10=89.92.pt
 ```
 
-This downloads WLASL's `pytorch_i3d.py` (pinned commit, SHA-256 checked) into `app/ml/artifacts/wlasl/`, copies the checkpoint to `app/ml/artifacts/wlasl100_i3d.pt` after checking its SHA-256, and writes `app/ml/artifacts/manifest.json` from the committed template `backend/app/ml/wlasl100_manifest.json` (18 provisional WLASL signs, `minProb` 0.25, `minMargin` 3.0). Vocabulary and thresholds remain provisional until webcam validation is complete; do not treat install as a production-ready recognizer.
+This downloads WLASL's `pytorch_i3d.py` (pinned commit, SHA-256 checked) into `app/ml/artifacts/wlasl/`, copies the checkpoint to `app/ml/artifacts/wlasl100_i3d.pt` after checking its SHA-256, and writes `app/ml/artifacts/manifest.json` from the committed template `backend/app/ml/wlasl100_manifest.json` (19 provisional WLASL signs, `minProb` 0.25, `minMargin` 3.0). Vocabulary and thresholds remain provisional until webcam validation is complete; do not treat install as a production-ready recognizer.
 
 With the server running, `tools/sample_request.sh [base_url] [levelId] [moveId]` sends one real request built with `Config.FRAME_COUNT` frames (64 by default). Until a qualified model exists and a level is enabled, expect `422 LEVEL_UNAVAILABLE` or `503 MODEL_NOT_READY`; that is the intended honest behaviour.
 
@@ -102,5 +102,5 @@ Every possible API response is listed in `shared/api-examples/responses.json`; a
 ## Contributing rules
 
 - Don't commit `.env` files, API keys, datasets, videos, extracted features or model weights (see `.gitignore`).
-- Only level 1 is unlocked by default; later levels unlock as the player clears their way up, tracked in `localStorage` (`pookie.levels`), seeded from `levels.json` on first load. The game uses **18 unique WLASL signs** across **29 move slots** (signs may repeat across levels, not within one level). The server only judges a sign that has a `modelLabel` in `shared/signs.json` and is in the model's `qualifiedLabels`; otherwise it answers `422 SIGN_UNAVAILABLE`. Vocabulary and thresholds remain provisional until webcam validation is complete. Don't add a sign to `qualifiedLabels` until it has reviewed teaching material, confirmed usage rights and measured model support.
+- Only level 1 is unlocked by default; later levels unlock as the player clears their way up, tracked in `localStorage` (`pookie.levels`), seeded from `levels.json` on first load. The game uses **18 unique WLASL signs** across **29 move slots** (signs may repeat across levels, not within one level). The registry/manifest also include **BUT** (19 signs total). The server only judges a sign that has a `modelLabel` in `shared/signs.json` and is in the model's `qualifiedLabels`; otherwise it answers `422 SIGN_UNAVAILABLE`. Vocabulary and thresholds remain provisional until webcam validation is complete. Don't add a sign to `qualifiedLabels` until it has reviewed teaching material, confirmed usage rights and measured model support.
 - Don't present mock or simulated recognition as a working ASL model.

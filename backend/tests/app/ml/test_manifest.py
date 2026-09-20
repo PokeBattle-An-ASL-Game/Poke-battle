@@ -29,6 +29,7 @@ EXPECTED_CLASS_MAP = {
     "2": "COMPUTER",
     "21": "FINISH",
     "19": "BLACK",
+    "80": "BUT",
 }
 
 
