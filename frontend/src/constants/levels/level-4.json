@@ -38,35 +38,27 @@
   "moves": [
     {
       "id": "move-1",
-      "signId": "KISS",
-      "difficulty": "easy",
-      "damage": 15,
-      "maxPP": 1,
-      "hintImage": "/assets/asl/KISS.png"
-    },
-    {
-      "id": "move-2",
-      "signId": "BED",
-      "difficulty": "medium",
-      "damage": 20,
-      "maxPP": 1,
-      "hintImage": "/assets/asl/BED.png"
-    },
-    {
-      "id": "move-3",
       "signId": "FISH",
-      "difficulty": "medium",
-      "damage": 25,
+      "difficulty": "easy",
+      "damage": 30,
       "maxPP": 1,
       "hintImage": "/assets/asl/FISH.png"
     },
     {
-      "id": "move-4",
-      "signId": "LAST",
+      "id": "move-2",
+      "signId": "BUT",
+      "difficulty": "medium",
+      "damage": 30,
+      "maxPP": 1,
+      "hintImage": "/assets/asl/BUT.png"
+    },
+    {
+      "id": "move-3",
+      "signId": "BED",
       "difficulty": "hard",
       "damage": 40,
       "maxPP": 1,
-      "hintImage": "/assets/asl/LAST.png"
+      "hintImage": "/assets/asl/BED.png"
     }
   ],
   "status": "planned-awaiting-ml-and-teaching-review"

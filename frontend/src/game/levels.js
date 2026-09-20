@@ -10,7 +10,7 @@ import signRegistry from '../../../shared/signs.json';
 
 const RAW_LEVELS_BY_ID = { 1: level1, 2: level2, 3: level3, 4: level4, 5: level5, 6: level6, 7: level7 };
 
-export const LEVELS_KEY = 'pookie.levels';
+export const LEVELS_KEY = 'poke.levels';
 
 // First load: seed localStorage from levels.json, but only level 1 starts
 // available — levels.json's own `available` flags are just the design
@@ -56,6 +56,13 @@ export function unlockLevel(id) {
   if (!level || !entry || level.available) return;
   level.available = true;
   entry.available = true;
+  try { localStorage.setItem(LEVELS_KEY, JSON.stringify(storedIndex)); } catch (e) { /* localStorage unavailable — progress stays session-only */ }
+}
+
+// Locks every level but the first and persists it straight back to localStorage.
+export function resetLevels() {
+  LEVELS.forEach((level) => { level.available = level.id === 1; });
+  storedIndex.forEach((entry) => { entry.available = entry.id === 1; });
   try { localStorage.setItem(LEVELS_KEY, JSON.stringify(storedIndex)); } catch (e) { /* localStorage unavailable — progress stays session-only */ }
 }
 

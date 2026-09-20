@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { LEVELS, isLevelAvailable, opponentImage, opponentName, palette, spriteScale } from '../../game/levels.js';
 import { useBattle } from '../../game/useBattle.js';
 import { EntranceEffects, OpponentSprite, PlayerSprite } from './Sprites.jsx';
@@ -9,12 +10,24 @@ import CaptureOverlay from './CaptureOverlay.jsx';
 import HintModal from './HintModal.jsx';
 import EndScreen from './EndScreen.jsx';
 
-export default function BattleScreen({ levelId, onUnlock, onNextLevel, onGoSelect }) {
+export default function BattleScreen({ levelId, onUnlock, onNextLevel, onGoSelect, setBattleReset }) {
   const battle = useBattle(levelId, onUnlock);
   const { state, level, moves, byId } = battle;
 
   const capturing = state.phase === 'CAPTURE' || state.phase === 'SUBMITTING';
   const ended = state.phase === 'VICTORY' || state.phase === 'DEFEAT';
+
+  // Surfaces the reset action in the header (next to BACK) instead of a floating button here.
+  useEffect(() => {
+    if (ended) {
+      setBattleReset(null);
+      return undefined;
+    }
+    setBattleReset(() => () => {
+      if (window.confirm('Reset this battle? PP and attacks will be restored.')) battle.restart();
+    });
+    return () => setBattleReset(null);
+  }, [ended, battle.restart, setBattleReset]);
   const showMessage = state.phase !== 'CHOOSE_MOVE';
   const showCommand = state.phase === 'CHOOSE_MOVE' && state.menuOpen !== false;
   const showGrid = state.phase === 'CHOOSE_MOVE' && state.menuOpen === false;
