@@ -144,6 +144,14 @@
       "referenceVideo": null,
       "approvedTeachingNotes": null,
       "status": "provisional-awaiting-webcam-validation"
+    },
+    {
+      "id": "BUT",
+      "displayText": "BUT",
+      "modelLabel": "but",
+      "referenceVideo": null,
+      "approvedTeachingNotes": null,
+      "status": "provisional-awaiting-webcam-validation"
     }
   ]
 }
