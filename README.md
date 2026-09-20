@@ -2,9 +2,9 @@
 
 A Pokémon-style battle game where players attack by performing American Sign Language (ASL) words in front of their webcam.
 
-> **Status: in development.** The React UI and the Flask `POST /api/validate-sign` backend exist. A provisional WLASL100 I3D manifest template is committed, but recognition is **not webcam-validated** yet and the UI's camera step is still simulated. Only level 1 unlocks by default — the rest open as the player clears their way up, tracked in `localStorage` — and the server only judges a sign once it is validated (see below).
+> **Status: Code Complete.** The React UI and the Flask `POST /api/validate-sign` backend exist. A provisional WLASL100 I3D manifest template is committed, but recognition is **not webcam-validated** yet and the UI's camera step is still simulated. Only level 1 unlocks by default — the rest open as the player clears their way up, tracked in `localStorage` — and the server only judges a sign once it is validated (see below).
 
-## Planned architecture
+## Architecture
 
 | Part | Tech | Responsibility |
 | --- | --- | --- |
