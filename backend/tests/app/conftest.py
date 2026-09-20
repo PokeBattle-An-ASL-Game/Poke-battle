@@ -20,7 +20,7 @@ class FakeRecognizer:
         self.error = error
         self.calls = 0
 
-    def predict_sequence(self, frames_rgb, timestamps_ms):
+    def predict_sequence(self, frames_rgb, timestamps_ms, expected_sign=None):
         self.calls += 1
         if self.error:
             raise self.error

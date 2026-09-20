@@ -45,16 +45,33 @@ def _softmax(scores: np.ndarray) -> np.ndarray:
     return exp / exp.sum()
 
 
-def decide(scores: np.ndarray, class_to_sign: dict[int, str], model_version: str,
-           min_prob: float = MIN_PROB, min_margin: float = MIN_MARGIN) -> Prediction:
+def decide(
+    scores: np.ndarray,
+    class_to_sign: dict[int, str],
+    model_version: str,
+    min_prob: float = MIN_PROB,
+    min_margin: float = MIN_MARGIN,
+    expected_sign: str | None = None,
+) -> Prediction:
     order = np.argsort(scores)[::-1]
     top1, top2 = int(order[0]), int(order[1])
     margin = float(scores[top1] - scores[top2])
     max_prob = float(_softmax(scores)[top1])
     label = class_to_sign.get(top1)
-    if max_prob < min_prob or margin < min_margin or label is None:
+
+    # Matching top-1 mapped sign is always correct (keep confidence).
+    if expected_sign is not None and label is not None and label == expected_sign:
+        return Prediction(label, max_prob, None, model_version)
+
+    # Unmapped top-1 → retry.
+    if label is None:
         return Prediction(None, max_prob, "uncertain_prediction", model_version)
-    return Prediction(label, max_prob, None, model_version)
+
+    # Mapped but different from expected (or no expected): keep threshold gates.
+    if max_prob >= min_prob and margin >= min_margin:
+        return Prediction(label, max_prob, None, model_version)
+
+    return Prediction(None, max_prob, "uncertain_prediction", model_version)
 
 
 class WlaslRecognizer:
@@ -66,10 +83,22 @@ class WlaslRecognizer:
         self.min_prob = min_prob
         self.min_margin = min_margin
 
-    def predict_sequence(self, frames_rgb: Sequence[np.ndarray], timestamps_ms: Sequence[float]) -> Prediction:
+    def predict_sequence(
+        self,
+        frames_rgb: Sequence[np.ndarray],
+        timestamps_ms: Sequence[float],
+        expected_sign: str | None = None,
+    ) -> Prediction:
         logits = np.asarray(self.model(preprocess(frames_rgb)), dtype=np.float64)
         scores = logits[0].max(axis=1)
-        return decide(scores, self.class_to_sign, self.model_version, self.min_prob, self.min_margin)
+        return decide(
+            scores,
+            self.class_to_sign,
+            self.model_version,
+            self.min_prob,
+            self.min_margin,
+            expected_sign=expected_sign,
+        )
 
 
 def _number(value, low: float, high: float) -> bool:
