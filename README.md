@@ -2,13 +2,13 @@
 
 A Pokémon-style battle game where players attack by performing American Sign Language (ASL) words in front of their webcam.
 
-> **Status: in development.** The React UI and the Flask `POST /api/validate-sign` backend exist. A provisional WLASL100 I3D manifest template is committed, but recognition is **not webcam-validated** yet and the UI's camera step is still simulated. Only level 1 unlocks by default — the rest open as the player clears their way up, tracked in `localStorage` — and the server only judges a sign once it is validated (see below).
+> **Status: in development.** The React UI and the Flask `POST /api/validate-sign` backend exist, and the UI records real webcam frames and posts them to the backend. A provisional WLASL100 I3D manifest template is committed, but recognition is **not webcam-validated** yet. Only level 1 unlocks by default — the rest open as the player clears their way up, tracked in `localStorage` — and the server only judges a sign once it is validated (see below).
 
 ## Planned architecture
 
 | Part | Tech | Responsibility |
 | --- | --- | --- |
-| `frontend/` | React + TypeScript | UI, camera capture, battle state (HP, PP, four attack slots, FIFO reserve queue), opponent turns, versioned `localStorage` progress |
+| `frontend/` | React (JavaScript/JSX) + Vite | UI, camera capture, battle state (HP, PP, four attack slots, FIFO reserve queue), opponent turns, versioned `localStorage` progress |
 | `backend/` | Flask + Python ML | A single application endpoint, `POST /api/validate-sign`, that checks a captured sign against the expected move |
 | `shared/` | JSON | Sign registry and draft narration lines shared by frontend and backend |
 
@@ -69,6 +69,8 @@ python3.12 -m venv .venv
 .venv/bin/flask --app "app:create_app()" run --port 5001   # serves http://localhost:5001
 ```
 
+With [uv](https://docs.astral.sh/uv/) instead: `uv venv .venv --python 3.12` then `uv pip install --python .venv/bin/python -r requirements-ml.txt -r requirements-dev.txt` (a uv-created venv has no `pip` of its own).
+
 For production use gunicorn instead of the Flask dev server (no access log, so client IPs are never logged; uploads stay in memory):
 
 ```bash
@@ -85,7 +87,7 @@ The backend can run the pretrained WLASL100 I3D video model. **The WLASL dataset
 
 This downloads WLASL's `pytorch_i3d.py` (pinned commit, SHA-256 checked) into `app/ml/artifacts/wlasl/`, copies the checkpoint to `app/ml/artifacts/wlasl100_i3d.pt` after checking its SHA-256, and writes `app/ml/artifacts/manifest.json` from the committed template `backend/app/ml/wlasl100_manifest.json` (18 provisional WLASL signs, `minProb` 0.25, `minMargin` 3.0). Vocabulary and thresholds remain provisional until webcam validation is complete; do not treat install as a production-ready recognizer.
 
-With the server running, `tools/sample_request.sh [base_url] [levelId] [moveId]` sends one real request built with `Config.FRAME_COUNT` frames (64 by default). Until a qualified model exists and a level is enabled, expect `422 LEVEL_UNAVAILABLE` or `503 MODEL_NOT_READY`; that is the intended honest behaviour.
+With the server running, `tools/sample_request.sh [base_url] [levelId] [moveId]` sends one real request built with `Config.FRAME_COUNT` frames (64 by default). Without the WLASL checkpoint installed it answers `503 MODEL_NOT_READY`; a sign without a `modelLabel` in `shared/signs.json` or missing from the manifest's `qualifiedLabels` answers `422 SIGN_UNAVAILABLE`. That is the intended honest behaviour — the backend never invents a `correct`.
 
 Environment variables (all optional):
 
@@ -96,6 +98,8 @@ Environment variables (all optional):
 | `POOKIE_LEVELS_DIR` | `frontend/src/constants/levels` |
 | `POOKIE_FRAME_COUNT` | `64` (frames per `POST /api/validate-sign` attempt; must match the frontend capture count and the WLASL manifest's `frameCount`) |
 | `POOKIE_SIGNS_PATH` | `shared/signs.json` |
+| `POOKIE_BIND` | `127.0.0.1:8000` (gunicorn only) |
+| `POOKIE_WORKERS` | `2` (gunicorn only) |
 
 Every possible API response is listed in `shared/api-examples/responses.json`; a backend test keeps it identical to what the server actually returns, so frontend mocks can use it directly.
 
