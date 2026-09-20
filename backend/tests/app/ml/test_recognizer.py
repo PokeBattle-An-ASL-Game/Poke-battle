@@ -33,7 +33,7 @@ def test_unknown_artifact_format_is_not_ready(tmp_path):
 
 def test_registered_loader_is_used(tmp_path, monkeypatch):
     class Stub:
-        def predict_sequence(self, frames_rgb, timestamps_ms):
+        def predict_sequence(self, frames_rgb, timestamps_ms, expected_sign=None):
             return r.Prediction(None, None, "uncertain_prediction", "stub-v1")
 
     monkeypatch.setitem(r.LOADERS, "stub", lambda manifest: Stub())

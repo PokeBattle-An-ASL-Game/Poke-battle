@@ -18,7 +18,12 @@ class Prediction:
 
 
 class Recognizer(Protocol):
-    def predict_sequence(self, frames_rgb: Sequence[np.ndarray], timestamps_ms: Sequence[float]) -> Prediction: ...
+    def predict_sequence(
+        self,
+        frames_rgb: Sequence[np.ndarray],
+        timestamps_ms: Sequence[float],
+        expected_sign: str | None = None,
+    ) -> Prediction: ...
 
 
 class ModelNotReady(Exception):

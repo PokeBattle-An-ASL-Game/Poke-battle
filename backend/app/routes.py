@@ -79,6 +79,13 @@ def _validate(request_id):
     except BadUpload:
         raise ApiError("BAD_REQUEST") from None
     try:
+        prediction = recognizer.predict_sequence(
+            frames,
+            attempt.timestamps_ms,
+            expected_sign=sign_id,
+        )
+    except TypeError:
+        # Test doubles / older recognizers may not accept expected_sign.
         prediction = recognizer.predict_sequence(frames, attempt.timestamps_ms)
     except Exception as error:
         log.error("inference failed: %s", type(error).__name__)
