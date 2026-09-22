@@ -2,6 +2,12 @@
 
 A Pokémon-style battle game where players attack by performing American Sign Language (ASL) words in front of their webcam.
 
+
+<img width="634" height="329" alt="Kapture 2026-09-22 at 11 00 01" src="https://github.com/user-attachments/assets/e73d6ba2-a899-4d75-8060-5cc9bd3f43bf" />
+
+
+
+
 ## Architecture
 
 | Part | Tech | Responsibility |
@@ -24,7 +30,7 @@ The backend never stores HP, PP, moves, progress, camera images or landmarks. Th
 
 ## Assets
 
-`frontend/public/assets/` holds placeholders only. Opponent art (`pokemon/*.png`), narration audio and ASL video clips are **git-ignored** until distribution rights are confirmed. See the README in each asset folder.
+`frontend/public/assets/` holds placeholders only. Opponent art (`pokemon/*.png`), narration audio and ASL video clips.
 
 ## Setup
 
@@ -34,8 +40,6 @@ Prerequisites: Node.js 18+ (frontend) and Python 3.12 (backend).
 git clone https://github.com/RohithNair27/Poke-battle.git
 cd Poke-battle
 ```
-
-(The repository will be renamed to `Poke-battle`; update the URL above once that rename happens on GitHub.)
 
 To check that the level JSON files parse:
 
@@ -67,13 +71,12 @@ python3.12 -m venv .venv
 .venv/bin/flask --app "app:create_app()" run --port 5001   # serves http://localhost:5001
 ```
 
-For production use gunicorn instead of the Flask dev server (no access log, so client IPs are never logged; uploads stay in memory):
 
 ```bash
 Poke_BIND=127.0.0.1:8000 Poke_CORS_ORIGINS=https://your-frontend.example .venv/bin/gunicorn -c gunicorn_config.py wsgi:app
 ```
 
-#### WLASL I3D model (non-commercial only)
+#### WLASL I3D model
 
 The backend can run the pretrained WLASL100 I3D video model. **The WLASL dataset and its pretrained weights are released under the C-UDA licence for academic, non-commercial use only.** Never commit or publicly share the weights. Download WLASL's pretrained weights archive yourself from https://drive.google.com/uc?id=1jALimVOB69ifYkeT0Pe297S1z4U3jC48 and unzip it; the checkpoint is `archived/asl100/FINAL_nslt_100_iters=896_top1=65.89_top5=84.11_top10=89.92.pt` (SHA-256 `a61d7dda5f875ce5ebd9d407c56874f77d1cd2aeb4bc7cd0d98a6e1ca4669a0c`).
 
@@ -97,8 +100,3 @@ Environment variables (all optional):
 
 Every possible API response is listed in `shared/api-examples/responses.json`; a backend test keeps it identical to what the server actually returns, so frontend mocks can use it directly.
 
-## Contributing rules
-
-- Don't commit `.env` files, API keys, datasets, videos, extracted features or model weights (see `.gitignore`).
-- Only level 1 is unlocked by default; later levels unlock as the player clears their way up, tracked in `localStorage` (`Poke.levels`), seeded from `levels.json` on first load. The game uses **18 unique WLASL signs** across **29 move slots** (signs may repeat across levels, not within one level). The registry/manifest also include **BUT** (19 signs total). The server only judges a sign that has a `modelLabel` in `shared/signs.json` and is in the model's `qualifiedLabels`; otherwise it answers `422 SIGN_UNAVAILABLE`. Vocabulary and thresholds remain provisional until webcam validation is complete. Don't add a sign to `qualifiedLabels` until it has reviewed teaching material, confirmed usage rights and measured model support.
-- Don't present mock or simulated recognition as a working ASL model.
